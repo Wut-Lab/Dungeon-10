@@ -16,14 +16,31 @@
   </section>
 
   <section id="play" class="screen" hidden>
-    <div id="hud">
-      <div class="who">Hero</div>
-      <div class="bar"><i id="hp-fill"></i><span id="hp-text"></span></div>
-      <div id="armor" class="slots" aria-label="Armor slots"></div>
-      <div id="roll">Last roll: –</div>
+    <div id="hero" class="unit">
+      <div class="who"></div><div class="bar"><i class="fill"></i><span class="hpt"></span></div>
+      <div class="slots" aria-label="Armor slots"></div><div class="stats"></div>
     </div>
     <div id="board"></div>
+    <div id="foe" class="unit foe" hidden>
+      <div class="who"></div><div class="bar"><i class="fill"></i><span class="hpt"></span></div>
+      <div class="slots" aria-label="Enemy armor slots"></div><div class="stats"></div>
+    </div>
+    <div id="dice" hidden><div class="die"><b id="hd">–</b><small>You</small></div><span class="vs">vs</span><div class="die foe-die"><b id="fd">–</b><small>Enemy</small></div></div>
+    <div id="actions" hidden>
+      <button data-act="attack" data-key="1">1 · Attack</button>
+      <button data-act="defend" data-key="2">2 · Defend</button>
+      <button data-act="repair" data-key="3">3 · Repair</button>
+      <button data-act="item" data-key="4" disabled title="No items yet">4 · Use item</button>
+      <button data-act="flee" data-key="5">5 · Flee</button>
+    </div>
+    <pre id="log" aria-live="polite"></pre>
     <p class="hint">Tap the next tile or press → to step forward.</p>
+  </section>
+
+  <section id="end" class="screen" hidden>
+    <h1 id="end-title"></h1><p id="end-text"></p>
+    <pre id="end-log"></pre>
+    <button id="again" class="big">Play again</button>
   </section>
 </main>
 <script src="data.js"></script>

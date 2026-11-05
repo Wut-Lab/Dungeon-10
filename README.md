@@ -11,12 +11,12 @@ The title screen has the same download link.
 
 ## Controls
 - Tap the next tile, or press **→**, to move.
-- Combat controls are coming next (Attack, Defend, Repair, Use item, Flee on keys 1–5).
+- In a fight, tap an action or press **1** Attack, **2** Defend, **3** Repair, **4** Use item (coming soon), **5** Flee.
 
 ## Files
 | File | What's in it |
 |---|---|
 | `index.html` | The page |
-| `data.js` | Game numbers: player stats, tiles (edit these to tune the game) |
+| `data.js` | Game numbers: player stats, enemies, tiles (edit these to tune the game) |
 | `game.js` | Game logic |
 | `style.css` | Look and feel |
