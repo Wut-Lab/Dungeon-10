@@ -23,7 +23,7 @@ function step() {
   const t = TILES[state.pos];
   if (t.kind === 'fight' && !state.cleared.has(state.pos)) {
     state.foe = makeUnit(ENEMIES[t.enemy]);
-    state.lastRoll = null; state.fx = [];
+    state.lastRoll = null; state.fx = []; state.armorFx = null;
     state.log = [`A ${state.foe.name} blocks the way!`];
   }
   render();
@@ -37,6 +37,7 @@ function hit(att, def, breakMult = 1) {
   def.hpNow -= dmg;
   const brk = Math.min(intact(def), Math.floor(att.armorBreak * breakMult));
   def.broken += brk;
+  if (brk) (def === state.hero ? state.armorFx.hero : state.armorFx.foe).lost += brk;
   state.fx.push({ att: att === state.hero ? 'hero' : 'foe', def: def === state.hero ? 'hero' : 'foe' });
   return `${att.name} hits for ${dmg} (rolled ${raw}, ${Math.max(0, raw - dmg)} blocked by armor)` + (brk ? `, breaking ${brk} armor` : '');
 }
@@ -46,6 +47,8 @@ function act(action) {
   if (!f || state.over) return;
   const log = [];
   state.fx = [];
+  state.armorFx = { hero: { lost: 0, gained: 0 }, foe: { lost: 0, gained: 0 } };
+  const startIntact = intact(h);
   const hd = d10(), fd = d10();
   // Attacking uses the attack bonus; other actions roll a plain d10.
   const hTotal = hd + (action === 'attack' || action === 'flee' ? h.attack : 0);
@@ -80,9 +83,11 @@ function act(action) {
     const n = h.broken ? Math.max(1, Math.ceil(h.broken * h.repairRate)) : 0;
     h.broken -= n;
     log.push(n ? `You repair ${n} armor slot${n > 1 ? 's' : ''}.` : 'Your armor is already whole.');
-    if (n) state.fx.push({ repair: true });
+    if (n) { state.fx.push({ repair: true }); state.armorFx.hero.gained += n; }
   }
 
+  const af = state.armorFx.hero;
+  if (af.lost || af.gained) log.push(`Your armor: ${startIntact}/${h.armor}` + (af.lost ? ` → ${af.lost} broken` : '') + (af.gained ? ` → ${af.gained} repaired` : '') + ` → ${intact(h)}/${h.armor}`);
   state.log = log;
   if (h.hpNow <= 0) return end(false);
   if (f.hpNow <= 0) {
@@ -113,6 +118,9 @@ function unitHud(u, el) {
   el.querySelector('.hpt').textContent = `HP ${Math.max(0, u.hpNow)} / ${u.hp}`;
   el.querySelector('.slots').innerHTML = Array.from({ length: u.armor }, (_, i) =>
     `<span class="slot ${i < intact(u) ? 'ok' : 'broken'}"></span>`).join('') || '<span class="none">No armor</span>';
+  const af = state.armorFx?.[u === state.hero ? 'hero' : 'foe'];
+  if (af && state.foe) el.querySelector('.slots').insertAdjacentHTML('beforeend',
+    (af.lost ? `<span class="chg lost">−${af.lost}</span>` : '') + (af.gained ? `<span class="chg gained">+${af.gained}</span>` : ''));
   el.querySelector('.stats').textContent = `Atk +${u.attack} · Dmg ${u.damage[0]}–${u.damage[1]} · Break ${u.armorBreak}`;
 }
 

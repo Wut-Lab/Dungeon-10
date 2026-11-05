@@ -71,3 +71,6 @@ h1{font-size:clamp(2.2rem,9vw,3.4rem);color:var(--accent);margin:24px 0 0;letter
 .plates .slot{width:14px;height:16px}.plates .stats{font-size:.75rem}
 .plates #foe{text-align:right}.plates #foe .slots{justify-content:flex-end}
 .plates .bar span{display:block;padding:0 8px}
+.chg{font:700 .75rem Georgia,serif;padding:0 5px;border-radius:4px;align-self:center;animation:pop .5s ease-out}
+.chg.lost{background:var(--accent);color:#fff}.chg.gained{background:var(--accent2);color:#fff}
+@keyframes pop{from{transform:scale(1.6);opacity:0}}
