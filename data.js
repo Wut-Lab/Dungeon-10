@@ -11,7 +11,7 @@ const PLAYER = {
 
 // Enemies. abilities: 'hasty' = Hasty Attack (wins a tie where both drop to 0).
 const ENEMIES = {
-  goblinWarrior: { name: 'Goblin Warrior', icon: '👺', hp: 7, attack: 1, damage: [1, 5], armorBreak: 1, armor: 1, abilities: [] },
+  goblinWarrior: { name: 'Goblin Warrior', icon: '👺', art: 'goblinWarrior', hp: 7, attack: 1, damage: [1, 5], armorBreak: 1, armor: 1, abilities: [] },
 };
 
 // The test map: two tiles.

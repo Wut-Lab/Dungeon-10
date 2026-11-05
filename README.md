@@ -19,4 +19,5 @@ The title screen has the same download link.
 | `index.html` | The page |
 | `data.js` | Game numbers: player stats, enemies, tiles (edit these to tune the game) |
 | `game.js` | Game logic |
-| `style.css` | Look and feel |
+| `art.js` | Paper-cutout character art (SVG) |
+| `style.css` | Look and feel, combat screen |

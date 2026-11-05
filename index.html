@@ -21,11 +21,21 @@
       <div class="slots" aria-label="Armor slots"></div><div class="stats"></div>
     </div>
     <div id="board"></div>
-    <div id="foe" class="unit foe" hidden>
-      <div class="who"></div><div class="bar"><i class="fill"></i><span class="hpt"></span></div>
-      <div class="slots" aria-label="Enemy armor slots"></div><div class="stats"></div>
+    <div id="arena" hidden>
+      <div class="plates">
+      <div id="foe" class="unit foe">
+        <div class="who"></div><div class="bar"><i class="fill"></i><span class="hpt"></span></div>
+        <div class="slots" aria-label="Enemy armor slots"></div><div class="stats"></div>
+      </div>
+      </div>
+      <div class="stage">
+        <div class="wall"></div><div class="floor"></div>
+        <div class="torch l"></div><div class="torch r"></div>
+        <div id="fig-hero" class="fig hero"></div>
+        <div id="dice"><div class="die"><b id="hd">–</b><small id="hd-sub">You</small></div><span class="vs">vs</span><div class="die foe-die"><b id="fd">–</b><small id="fd-sub">Enemy</small></div></div>
+        <div id="fig-foe" class="fig foe-fig"></div>
+      </div>
     </div>
-    <div id="dice" hidden><div class="die"><b id="hd">–</b><small>You</small></div><span class="vs">vs</span><div class="die foe-die"><b id="fd">–</b><small>Enemy</small></div></div>
     <div id="actions" hidden>
       <button data-act="attack" data-key="1">1 · Attack</button>
       <button data-act="defend" data-key="2">2 · Defend</button>
@@ -44,6 +54,7 @@
   </section>
 </main>
 <script src="data.js"></script>
+<script src="art.js"></script>
 <script src="game.js"></script>
 </body>
 </html>

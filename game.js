@@ -23,6 +23,7 @@ function step() {
   const t = TILES[state.pos];
   if (t.kind === 'fight' && !state.cleared.has(state.pos)) {
     state.foe = makeUnit(ENEMIES[t.enemy]);
+    state.lastRoll = null; state.fx = [];
     state.log = [`A ${state.foe.name} blocks the way!`];
   }
   render();
@@ -36,6 +37,7 @@ function hit(att, def, breakMult = 1) {
   def.hpNow -= dmg;
   const brk = Math.min(intact(def), Math.floor(att.armorBreak * breakMult));
   def.broken += brk;
+  state.fx.push({ att: att === state.hero ? 'hero' : 'foe', def: def === state.hero ? 'hero' : 'foe' });
   return `${att.name} hits for ${dmg} (rolled ${raw}, ${Math.max(0, raw - dmg)} blocked by armor)` + (brk ? `, breaking ${brk} armor` : '');
 }
 
@@ -43,18 +45,13 @@ function act(action) {
   const h = state.hero, f = state.foe;
   if (!f || state.over) return;
   const log = [];
+  state.fx = [];
   const hd = d10(), fd = d10();
   // Attacking uses the attack bonus; other actions roll a plain d10.
   const hTotal = hd + (action === 'attack' || action === 'flee' ? h.attack : 0);
   const fTotal = fd + f.attack;
   state.lastRoll = { hd, ht: hTotal, fd, ft: fTotal };
   log.push(`You roll ${hd}${hTotal !== hd ? ` +${hTotal - hd} = ${hTotal}` : ''} vs ${f.name} ${fd} +${f.attack} = ${fTotal}`);
-
-  if (action === 'repair') {
-    const n = h.broken ? Math.max(1, Math.ceil(h.broken * h.repairRate)) : 0;
-    h.broken -= n;
-    log.push(n ? `You repair ${n} armor slot${n > 1 ? 's' : ''}.` : 'Your armor is already whole.');
-  }
 
   if (action === 'flee') {
     if (hTotal > fTotal) { log.push('You escape back the way you came!'); state.foe = null; state.pos--; state.log = log; return render(); }
@@ -76,6 +73,14 @@ function act(action) {
     // defend / repair / item: hero doesn't strike. Enemy hits if it wins or ties.
     if (fTotal >= hTotal) log.push(hit(f, h, action === 'defend' ? 0.5 : 1));
     else log.push(action === 'defend' ? 'You hold your guard; the blow glances off.' : `${f.name} misses.`);
+  }
+
+  // Repair resolves at the end of the round, after the enemy's hit, so it always restores at least 1 slot.
+  if (action === 'repair' && h.hpNow > 0) {
+    const n = h.broken ? Math.max(1, Math.ceil(h.broken * h.repairRate)) : 0;
+    h.broken -= n;
+    log.push(n ? `You repair ${n} armor slot${n > 1 ? 's' : ''}.` : 'Your armor is already whole.');
+    if (n) state.fx.push({ repair: true });
   }
 
   state.log = log;
@@ -111,14 +116,36 @@ function unitHud(u, el) {
   el.querySelector('.stats').textContent = `Atk +${u.attack} · Dmg ${u.damage[0]}–${u.damage[1]} · Break ${u.armorBreak}`;
 }
 
+// Round animations: attacker lunges, defender shakes; repair glints.
+function playFx() {
+  const figs = { hero: $('#fig-hero'), foe: $('#fig-foe') };
+  for (const el of Object.values(figs)) el.classList.remove('lunge', 'hurt', 'mend');
+  void document.body.offsetWidth; // restart CSS animations
+  for (const fx of state.fx || []) {
+    if (fx.repair) figs.hero.classList.add('mend');
+    else { figs[fx.att].classList.add('lunge'); figs[fx.def].classList.add('hurt'); }
+  }
+  for (const d of ['#hd', '#fd']) { const el = $(d).parentElement; el.classList.remove('roll'); void el.offsetWidth; el.classList.add('roll'); }
+}
+
 function render() {
   unitHud(state.hero, $('#hero'));
   const f = state.foe;
-  $('#foe').hidden = !f;
-  if (f) unitHud(f, $('#foe'));
+  $('#arena').hidden = !f;
+  $('#board').hidden = !!f;
+  // In a fight the hero's panel sits beside the enemy's; otherwise above the board.
+  if (f) $('.plates').prepend($('#hero')); else $('#board').before($('#hero'));
+  if (f) {
+    unitHud(f, $('#foe'));
+    $('#fig-hero').innerHTML = ART.hero;
+    $('#fig-foe').innerHTML = ART[f.art] || '';
+    playFx();
+  }
   const r = state.lastRoll;
-  $('#dice').hidden = !f && !r;
-  if (r) { $('#hd').textContent = r.hd; $('#fd').textContent = r.fd; }
+  $('#hd').textContent = r ? r.ht : '–';
+  $('#fd').textContent = r ? r.ft : '–';
+  $('#hd-sub').textContent = r ? `rolled ${r.hd}` : 'You';
+  $('#fd-sub').textContent = r ? `rolled ${r.fd}` : 'Enemy';
   $('#actions').hidden = !f;
   $('#log').textContent = state.log.join('\n');
   $('.hint').hidden = !!f;

@@ -33,3 +33,41 @@ h1{font-size:clamp(2.2rem,9vw,3.4rem);color:var(--accent);margin:24px 0 0;letter
 .tile.here{border-color:var(--accent)}.tile.next{border-style:dashed;border-color:var(--accent2);cursor:pointer}
 .tname{font-weight:700}.token{font-size:2.4rem}
 .hint{color:var(--mute);font-size:.9rem}
+
+/* ---- Combat screen: paper-cutout face-off ---- */
+#arena{width:100%;display:grid;gap:10px}#arena[hidden],#board[hidden]{display:none}
+.stage{position:relative;height:230px;border:2px solid var(--line);border-radius:10px;overflow:hidden;display:grid;grid-template-columns:1fr auto 1fr;align-items:end;padding:0 4px 8px}
+.wall{position:absolute;inset:0 0 34% 0;background:
+ linear-gradient(#0000 47%,#0002 47% 53%,#0000 53%) 0 0/100% 40px,
+ repeating-linear-gradient(90deg,#0000 0 58px,#0002 58px 62px) 0 0/100% 40px,
+ #b9a88a;clip-path:polygon(0 0,100% 0,100% 96%,85% 100%,60% 95%,30% 100%,0 96%)}
+.floor{position:absolute;inset:auto 0 0 0;height:38%;background:#8c7556;clip-path:polygon(0 12%,20% 4%,45% 10%,70% 2%,100% 9%,100% 100%,0 100%)}
+.torch{position:absolute;top:24px;width:14px;height:34px;background:#5a3b1e;border-radius:2px}
+.torch::before{content:"";position:absolute;left:-6px;top:-24px;width:26px;height:28px;background:#e8a33a;clip-path:polygon(50% 0,80% 45%,100% 70%,50% 100%,0 70%,20% 45%);animation:flick 1.2s infinite alternate;filter:drop-shadow(0 0 8px #f5b54a)}
+.torch.l{left:18%}.torch.r{right:18%}
+@keyframes flick{to{transform:scale(.88,1.08) rotate(3deg)}}
+.fig{position:relative;z-index:1;height:180px;display:flex;justify-content:center}
+.fig svg{height:100%;width:auto;overflow:visible}
+.paper>*{filter:drop-shadow(1.5px 2.5px 0 rgba(43,29,14,.35))}
+.fig.hero svg{transform:rotate(-2deg)}.fig.foe-fig svg{transform:rotate(2deg)}
+.fig.lunge.hero{animation:lungeR .45s ease-out}.fig.lunge.foe-fig{animation:lungeL .45s ease-out}
+.fig.hurt{animation:hurt .5s ease-out .2s}
+.fig.mend::after{content:"✦ +armor";position:absolute;top:0;left:50%;transform:translateX(-50%);font:700 .9rem Georgia,serif;color:var(--accent2);animation:rise 1s ease-out forwards}
+@keyframes lungeR{40%{transform:translateX(22px) rotate(4deg)}}
+@keyframes lungeL{40%{transform:translateX(-22px) rotate(-4deg)}}
+@keyframes hurt{20%,60%{transform:translateX(-6px);filter:sepia(1) saturate(4) hue-rotate(-30deg)}40%,80%{transform:translateX(6px)}}
+@keyframes rise{from{opacity:1;top:10px}to{opacity:0;top:-20px}}
+#dice{position:relative;z-index:1;align-self:center;flex-direction:column;gap:4px}
+.die{width:58px;height:58px;transform:rotate(-4deg);box-shadow:2px 3px 0 rgba(43,29,14,.35)}
+.foe-die{transform:rotate(4deg)}
+.die small{font-size:.65rem}
+.die.roll{animation:tumble .4s ease-out}
+@keyframes tumble{from{transform:rotate(-200deg) scale(.6)}}
+@media (prefers-reduced-motion:reduce){.fig,.die,.torch::before,.fig::after{animation:none!important}}
+@media (min-width:520px){.stage{height:280px}.fig{height:230px}}
+.plates{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.plates .unit{padding:8px 10px;gap:4px}.plates .who{font-size:.92rem}
+.plates .bar{height:18px}.plates .bar span{font-size:.75rem}
+.plates .slot{width:14px;height:16px}.plates .stats{font-size:.75rem}
+.plates #foe{text-align:right}.plates #foe .slots{justify-content:flex-end}
+.plates .bar span{display:block;padding:0 8px}
