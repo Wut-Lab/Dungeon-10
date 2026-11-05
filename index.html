@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dungeon 10</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main id="app">
+  <section id="title" class="screen">
+    <h1>Dungeon 10</h1>
+    <p class="tag">A d10 dice-roll dungeon adventure</p>
+    <button id="start" class="big">Tap to begin your quest</button>
+    <a class="dl" href="https://github.com/Wut-Lab/Dungeon-10/archive/refs/heads/main.zip">Download the game to play offline</a>
+  </section>
+
+  <section id="play" class="screen" hidden>
+    <div id="hud">
+      <div class="who">Hero</div>
+      <div class="bar"><i id="hp-fill"></i><span id="hp-text"></span></div>
+      <div id="armor" class="slots" aria-label="Armor slots"></div>
+      <div id="roll">Last roll: –</div>
+    </div>
+    <div id="board"></div>
+    <p class="hint">Tap the next tile or press → to step forward.</p>
+  </section>
+</main>
+<script src="data.js"></script>
+<script src="game.js"></script>
+</body>
+</html>

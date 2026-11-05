@@ -1,0 +1,24 @@
+:root{--bg:#f3e9d2;--card:#fbf5e6;--fg:#2b1d0e;--mute:#6b5232;--accent:#8b2e16;--accent2:#2f5d50;--line:#d9c7a3;--ok:#3d6b2a}
+@media (prefers-color-scheme:dark){:root{--bg:#1a140e;--card:#261d14;--fg:#efe3c8;--mute:#bba67f;--accent:#e0794f;--accent2:#7fbfa8;--line:#3d3020;--ok:#8fc46b}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 Georgia,serif;min-height:100vh}
+#app{max-width:640px;margin:0 auto;padding:24px 16px}
+.screen{display:grid;gap:16px;justify-items:center;text-align:center}.screen[hidden]{display:none}
+h1{font-size:clamp(2.2rem,9vw,3.4rem);color:var(--accent);margin:24px 0 0;letter-spacing:.04em}
+.tag{color:var(--mute);margin:0}
+.big{font:700 1.2rem Georgia,serif;padding:14px 28px;border-radius:8px;border:2px solid var(--accent);background:var(--accent);color:#fff;cursor:pointer}
+.dl{color:var(--accent2);font-size:.95rem}
+#hud{width:100%;display:grid;grid-template-columns:auto 1fr;gap:8px 12px;align-items:center;background:var(--card);border:2px solid var(--line);border-radius:8px;padding:12px}
+.who{font-weight:700}
+.bar{position:relative;height:22px;background:var(--line);border-radius:4px;overflow:hidden}
+.bar i{position:absolute;inset:0 auto 0 0;background:var(--ok);transition:width .3s}
+.bar span{position:relative;font-size:.85rem;font-weight:700;padding-left:8px;color:#fff;text-shadow:0 1px 2px #0008}
+.slots{grid-column:2;display:flex;gap:4px}
+.slot{width:18px;height:20px;clip-path:polygon(50% 0,100% 20%,90% 75%,50% 100%,10% 75%,0 20%)}
+.slot.ok{background:var(--accent2)}.slot.broken{background:var(--line);outline:1px dashed var(--mute)}
+#roll{grid-column:1/-1;color:var(--mute);font-size:.9rem;text-align:left}
+#board{display:flex;gap:12px;width:100%}
+.tile{flex:1;aspect-ratio:1;border:3px solid var(--line);border-radius:10px;background:var(--card);color:var(--fg);font:inherit;display:grid;place-items:center;align-content:center;gap:8px;cursor:default}
+.tile.here{border-color:var(--accent)}.tile.next{border-style:dashed;border-color:var(--accent2);cursor:pointer}
+.tname{font-weight:700}.token{font-size:2.4rem}
+.hint{color:var(--mute);font-size:.9rem}
