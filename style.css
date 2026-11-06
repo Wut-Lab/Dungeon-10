@@ -74,3 +74,5 @@ h1{font-size:clamp(2.2rem,9vw,3.4rem);color:var(--accent);margin:24px 0 0;letter
 .chg{font:700 .75rem Georgia,serif;padding:0 5px;border-radius:4px;align-self:center;animation:pop .5s ease-out}
 .chg.lost{background:var(--accent);color:#fff}.chg.gained{background:var(--accent2);color:#fff}
 @keyframes pop{from{transform:scale(1.6);opacity:0}}
+.paper>.d{filter:drop-shadow(.4px .6px 0 rgba(43,29,14,.3))}
+.paper>.m{filter:drop-shadow(.8px 1.2px 0 rgba(43,29,14,.32))}

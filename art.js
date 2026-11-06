@@ -24,11 +24,11 @@ const ART = {
   <path d="M65 73 Q72 70 79 75 L77 80 Q71 77 65 78 Z" fill="#8f9ba0"/>
   <path d="M54 24 Q57 9 69 13 Q63 18 62 24 Z" fill="#8b2e16"/>
   <path d="M45 31 Q45 23 52 23 H64 Q71 23 71 31 V58 Q71 64 65 65 H51 Q45 64 45 58 Z" fill="#8f9ba0"/>
-  <rect x="45" y="34" width="26" height="3" fill="#7a868b"/>
-  <path d="M60 38 V62" stroke="#7a868b" stroke-width="2"/>
-  <rect x="48" y="41" width="23" height="3.5" rx="1" fill="#2b1d0e"/>
-  <circle cx="64" cy="51" r="1" fill="#2b1d0e"/><circle cx="67" cy="51" r="1" fill="#2b1d0e"/>
-  <circle cx="64" cy="55" r="1" fill="#2b1d0e"/><circle cx="67" cy="55" r="1" fill="#2b1d0e"/>
+  <rect class="d" x="45" y="34" width="26" height="3" fill="#7a868b"/>
+  <path class="d" d="M60 38 V62" stroke="#7a868b" stroke-width="2"/>
+  <rect class="d" x="48" y="41" width="23" height="3.5" rx="1" fill="#2b1d0e"/>
+  <circle class="d" cx="64" cy="51" r="1" fill="#2b1d0e"/><circle class="d" cx="67" cy="51" r="1" fill="#2b1d0e"/>
+  <circle class="d" cx="64" cy="55" r="1" fill="#2b1d0e"/><circle class="d" cx="67" cy="55" r="1" fill="#2b1d0e"/>
   <circle cx="40" cy="98" r="20" fill="#8a5a2b"/>
   <circle cx="40" cy="98" r="18" fill="none" stroke="#9aa5a8" stroke-width="4"/>
   <path d="M40 82 V114 M24 98 H56" stroke="#d9b44a" stroke-width="4"/>
@@ -54,16 +54,16 @@ const ART = {
   <path d="M44 51 L12 40 L44 63 Z" fill="#6f8f3a"/>
   <path d="M80 51 L112 40 L80 63 Z" fill="#6f8f3a"/>
   <ellipse cx="62" cy="57" rx="20" ry="17" fill="#7fa043"/>
-  <path d="M43 51 Q44 37 62 37 Q80 37 81 51 Q62 44 43 51 Z" fill="#5a3b1e"/>
-  <path d="M62 37.5 V45 M52 39.5 Q54 44 53 47 M72 39.5 Q70 44 71 47" fill="none" stroke="#3a2a18" stroke-width="1.2"/>
-  <ellipse cx="54" cy="56" rx="5" ry="3.5" fill="#f2d14a"/>
-  <ellipse cx="70" cy="56" rx="5" ry="3.5" fill="#f2d14a"/>
-  <circle cx="53" cy="56" r="2" fill="#8b1a10"/>
-  <circle cx="69" cy="56" r="2" fill="#8b1a10"/>
-  <path d="M48 49 L59 52 L59 54.5 L48 51.5 Z" fill="#4f6b2a"/>
-  <path d="M76 49 L65 52 L65 54.5 L76 51.5 Z" fill="#4f6b2a"/>
-  <path d="M62 57 L58 64 L65 64 Z" fill="#5f7f2f"/>
-  <path d="M52 67 Q62 76 72 67 Q62 71 52 67 Z" fill="#2b1d0e"/>
-  <path d="M56 68.2 l2 4 l2 -3.4 Z M64 68.8 l2 3.4 l2 -4 Z" fill="#f3e9d2"/>
+  <path class="m" d="M43 51 Q44 37 62 37 Q80 37 81 51 Q62 44 43 51 Z" fill="#5a3b1e"/>
+  <path class="d" d="M62 37.5 V45 M52 39.5 Q54 44 53 47 M72 39.5 Q70 44 71 47" fill="none" stroke="#3a2a18" stroke-width="1.2"/>
+  <ellipse class="d" cx="54" cy="56" rx="5" ry="3.5" fill="#f2d14a"/>
+  <ellipse class="d" cx="70" cy="56" rx="5" ry="3.5" fill="#f2d14a"/>
+  <circle class="d" cx="53" cy="56" r="2" fill="#8b1a10"/>
+  <circle class="d" cx="69" cy="56" r="2" fill="#8b1a10"/>
+  <path class="d" d="M48 49 L59 52 L59 54.5 L48 51.5 Z" fill="#4f6b2a"/>
+  <path class="d" d="M76 49 L65 52 L65 54.5 L76 51.5 Z" fill="#4f6b2a"/>
+  <path class="d" d="M62 57 L58 64 L65 64 Z" fill="#5f7f2f"/>
+  <path class="d" d="M52 67 Q62 76 72 67 Q62 71 52 67 Z" fill="#2b1d0e"/>
+  <path class="d" d="M56 68.2 l2 4 l2 -3.4 Z M64 68.8 l2 3.4 l2 -4 Z" fill="#f3e9d2"/>
   </svg>`,
 };
