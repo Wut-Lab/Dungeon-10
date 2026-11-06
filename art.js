@@ -22,13 +22,19 @@ const ART = {
   <path d="M51 73 Q44 70 37 75 L39 80 Q45 77 51 78 Z" fill="#8f9ba0"/>
   <path d="M63 66 Q70 58 80 64 Q83 72 77 77 Q70 72 63 72 Z" fill="#9aa5a8"/>
   <path d="M65 73 Q72 70 79 75 L77 80 Q71 77 65 78 Z" fill="#8f9ba0"/>
-  <path d="M54 24 Q57 9 69 13 Q63 18 62 24 Z" fill="#8b2e16"/>
-  <path d="M45 31 Q45 23 52 23 H64 Q71 23 71 31 V58 Q71 64 65 65 H51 Q45 64 45 58 Z" fill="#8f9ba0"/>
-  <rect class="d" x="45" y="34" width="26" height="3" fill="#7a868b"/>
-  <path class="d" d="M60 38 V62" stroke="#7a868b" stroke-width="2"/>
-  <rect class="d" x="48" y="41" width="23" height="3.5" rx="1" fill="#2b1d0e"/>
-  <circle class="d" cx="64" cy="51" r="1" fill="#2b1d0e"/><circle class="d" cx="67" cy="51" r="1" fill="#2b1d0e"/>
-  <circle class="d" cx="64" cy="55" r="1" fill="#2b1d0e"/><circle class="d" cx="67" cy="55" r="1" fill="#2b1d0e"/>
+  <path d="M55 25 Q57 9 69 12 Q63 17 63 25 Z" fill="#8b2e16"/>
+  <path d="M45 26 Q58 21 71 26 L72 62 Q72 67 67 68 H49 Q44 67 44 62 Z" fill="#8f9ba0"/>
+  <path d="M62 23.5 Q68 24 71 26 L72 62 Q72 67 67 68 H62 Z" fill="#a3adb0"/>
+  <path class="m" d="M45 26 Q58 21 71 26 Q58 30 45 26 Z" fill="#7a868b"/>
+  <rect class="d" x="60" y="27" width="3.5" height="41" fill="#7a868b"/>
+  <rect class="d" x="44" y="40" width="28" height="3.5" fill="#7a868b"/>
+  <rect class="d" x="47" y="35" width="12" height="3" rx="1" fill="#2b1d0e"/>
+  <rect class="d" x="65" y="35" width="6" height="3" rx="1" fill="#2b1d0e"/>
+  <circle class="d" cx="48" cy="41.75" r=".8" fill="#cfd6d8"/><circle class="d" cx="54" cy="41.75" r=".8" fill="#cfd6d8"/><circle class="d" cx="68" cy="41.75" r=".8" fill="#cfd6d8"/>
+  <circle class="d" cx="66" cy="48" r="1" fill="#2b1d0e"/><circle class="d" cx="69" cy="48" r="1" fill="#2b1d0e"/>
+  <circle class="d" cx="66" cy="52" r="1" fill="#2b1d0e"/><circle class="d" cx="69" cy="52" r="1" fill="#2b1d0e"/>
+  <circle class="d" cx="66" cy="56" r="1" fill="#2b1d0e"/><circle class="d" cx="69" cy="56" r="1" fill="#2b1d0e"/>
+  <path class="d" d="M44 63 H72" stroke="#7a868b" stroke-width="2"/>
   <circle cx="40" cy="98" r="20" fill="#8a5a2b"/>
   <circle cx="40" cy="98" r="18" fill="none" stroke="#9aa5a8" stroke-width="4"/>
   <path d="M40 82 V114 M24 98 H56" stroke="#d9b44a" stroke-width="4"/>
