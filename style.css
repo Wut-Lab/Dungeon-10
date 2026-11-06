@@ -159,3 +159,9 @@ button:not(:disabled):active{transform:scale(.94);filter:brightness(.92)}
 .group{margin:12px 0 2px;font-size:.8rem;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);border-bottom:1px solid var(--line);padding-bottom:2px}
 .group+.none{margin:4px 0;font-size:.85rem}
 .tag-eq{font-size:.7rem;font-weight:700;color:#fff;background:var(--accent2);border-radius:4px;padding:1px 6px}
+
+.group-box summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:8px}
+.group-box summary::-webkit-details-marker{display:none}
+.group-box summary::before{content:"▸";transition:transform .15s}
+.group-box[open] summary::before{transform:rotate(90deg)}
+.count{margin-left:auto;font-size:.72rem;color:var(--mute);letter-spacing:0}

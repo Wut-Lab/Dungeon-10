@@ -358,6 +358,9 @@ function drawMap() {
 }
 
 // ---- Inventory ----
+// Equipment groups start closed; remember which ones you opened while the menu re-draws.
+const openGroups = new Set();
+document.addEventListener('toggle', e => { const g = e.target.dataset?.group; if (g) e.target.open ? openGroups.add(g) : openGroups.delete(g); }, true);
 const SLOT_NAMES = { rightHand: 'Right hand', leftHand: 'Left hand', helmet: 'Helmet', breastplate: 'Breastplate', greaves: 'Greaves' };
 // The hero's damage comes from the best equipped weapon, or bare fists.
 function applyGear() {
@@ -397,9 +400,9 @@ function inventoryMenu() {
   const GROUPS = [['weapon', 'Weapons'], ['shield', 'Shields'], ['helmet', 'Helmet'], ['armor', 'Armor'], ['greaves', 'Greaves']];
   const pack = GROUPS.map(([type, label]) => {
     const list = owned.filter(o => EQUIPMENT[o.id].type === type).sort((a, b) => EQUIPMENT[a.id].name.localeCompare(EQUIPMENT[b.id].name));
-    return `<h4 class="group">${label}</h4>` + (list.length ? list.map(o => `<button class="foe-row" ${o.slot ? `data-slot="${o.slot}"` : `data-pack="${o.i}"`}>
+    return `<details class="group-box" data-group="${type}" ${openGroups.has(type) ? 'open' : ''}><summary class="group">${label} <span class="count">${list.length}</span></summary>` + (list.length ? list.map(o => `<button class="foe-row" ${o.slot ? `data-slot="${o.slot}"` : `data-pack="${o.i}"`}>
       <span class="row-art">${ICONS[o.id] || ''}</span><span class="grow">${EQUIPMENT[o.id].name}<small>${EQUIPMENT[o.id].desc} ${o.slot ? 'Tap to unequip.' : 'Tap to equip.'}</small></span>
-      ${o.slot ? `<span class="tag-eq">Equipped</span>` : ''}</button>`).join('') : '<p class="none">None</p>');
+      ${o.slot ? `<span class="tag-eq">Equipped</span>` : ''}</button>`).join('') : '<p class="none">None</p>') + '</details>';
   }).join('');
   const wpn = ['rightHand', 'leftHand'].map(s => e[s] && EQUIPMENT[e[s]]).filter(Boolean);
   return `<h3>Inventory</h3>${tabs}
@@ -452,7 +455,7 @@ function closeMenu() {
 document.querySelectorAll('#nav button').forEach(b => b.onclick = () => openMenu(b.dataset.menu));
 $('#menu-close').onclick = closeMenu;
 $('#menu-body').onclick = e => {
-  const t = e.target.closest('[data-tab],[data-use],[data-slot],[data-pack]');
+  const t = e.target.closest('button[data-tab],button[data-use],button[data-slot],button[data-pack]');
   if (t && $('#menu').dataset.open === 'inventory') {
     const inv = state.inv;
     if (t.dataset.tab) $('#menu').dataset.tab = t.dataset.tab;
