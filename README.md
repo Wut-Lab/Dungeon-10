@@ -18,7 +18,7 @@ The title screen has the same download link.
 - Reach the **exit stairs** to win.
 - In a fight, tap an action or press **1** Attack, **2** Defend, **3** Repair, **4** Use item (drinks a potion), **5** Flee.
 - **Inventory**, **Log** and **Options** sit at the top of the play screen. The Log records every enemy you have met as a list; tap one to open its full card (stats, times met and defeated). It is kept between runs in your browser. Esc closes a menu.
-- **Inventory** has two tabs. **Items** lists consumables (you start with 2 Healing Potions, +6 HP each). **Equipment** shows the hero with a box by each hand and a Helmet / Breastplate / Greaves stack; tap a filled box to unequip it to your pack, tap a pack item to equip it. Your weapon sets your damage (Short Sword 2–4, bare fists 1–2). The hero has 2 base armor slots; the starting Simple Shield adds a third.
+- **Inventory** has two tabs. **Items** lists consumables (you start with 1 Healing Potion, which restores 25% of max HP). **Equipment** shows the hero with a box by each hand and a Helmet / Breastplate / Greaves stack; your gear is listed under Weapons, Shields, Helmet, Armor and Greaves; tap a piece to equip or unequip it. Your weapon sets your damage (Short Sword 2–4, bare fists 1–2). The hero has 2 base armor slots; the starting Simple Shield adds a third.
 
 ## Files
 | File | What's in it |

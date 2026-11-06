@@ -155,3 +155,7 @@ h1{font-size:clamp(2.2rem,9vw,3.4rem);color:var(--accent);margin:24px 0 0;letter
 /* Basic click animation for every button */
 button{transition:transform .08s ease-out,filter .08s}
 button:not(:disabled):active{transform:scale(.94);filter:brightness(.92)}
+
+.group{margin:12px 0 2px;font-size:.8rem;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);border-bottom:1px solid var(--line);padding-bottom:2px}
+.group+.none{margin:4px 0;font-size:.85rem}
+.tag-eq{font-size:.7rem;font-weight:700;color:#fff;background:var(--accent2);border-radius:4px;padding:1px 6px}

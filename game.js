@@ -82,6 +82,8 @@ async function rollMove() {
   state.log = [`You roll ${die} + 1: move ${state.steps} spaces.`];
   render();
   spinDie($('#move-die').parentElement);
+  state.moving = true; render();
+  await wait(1000);              // let the roll sink in before you start moving
   await keepMoving();
 }
 
@@ -369,7 +371,7 @@ function useItem(id) {
   const it = CONSUMABLES[id], h = state.hero;
   if (!it || !state.inv.items[id]) return null;
   state.inv.items[id]--;
-  const healed = Math.min(it.heal || 0, h.hp - h.hpNow);
+  const healed = Math.min(Math.ceil(h.hp * (it.healPct || 0)), h.hp - h.hpNow);
   h.hpNow += healed;
   return `You drink a ${it.name} and recover ${healed} HP.`;
 }
@@ -390,7 +392,15 @@ function inventoryMenu() {
       : '<p class="none">No consumables.</p>');
   }
   const e = state.inv.equipped;
-  const pack = state.inv.pack.map((id, i) => `<button class="foe-row" data-pack="${i}"><span class="row-art">${ICONS[id] || ''}</span><span class="grow">${EQUIPMENT[id].name}<small>${EQUIPMENT[id].desc} Tap to equip.</small></span></button>`).join('');
+  // Everything you own (worn and in the pack), sorted under headers by type.
+  const owned = [...Object.entries(e).filter(([, id]) => id).map(([slot, id]) => ({ id, slot })), ...state.inv.pack.map((id, i) => ({ id, i }))];
+  const GROUPS = [['weapon', 'Weapons'], ['shield', 'Shields'], ['helmet', 'Helmet'], ['armor', 'Armor'], ['greaves', 'Greaves']];
+  const pack = GROUPS.map(([type, label]) => {
+    const list = owned.filter(o => EQUIPMENT[o.id].type === type).sort((a, b) => EQUIPMENT[a.id].name.localeCompare(EQUIPMENT[b.id].name));
+    return `<h4 class="group">${label}</h4>` + (list.length ? list.map(o => `<button class="foe-row" ${o.slot ? `data-slot="${o.slot}"` : `data-pack="${o.i}"`}>
+      <span class="row-art">${ICONS[o.id] || ''}</span><span class="grow">${EQUIPMENT[o.id].name}<small>${EQUIPMENT[o.id].desc} ${o.slot ? 'Tap to unequip.' : 'Tap to equip.'}</small></span>
+      ${o.slot ? `<span class="tag-eq">Equipped</span>` : ''}</button>`).join('') : '<p class="none">None</p>');
+  }).join('');
   const wpn = ['rightHand', 'leftHand'].map(s => e[s] && EQUIPMENT[e[s]]).filter(Boolean);
   return `<h3>Inventory</h3>${tabs}
     <div class="equip">
@@ -398,7 +408,7 @@ function inventoryMenu() {
       <div class="armor-stack">${equipBox('helmet')}${equipBox('breastplate')}${equipBox('greaves')}</div>
     </div>
     <p class="sub">Damage ${state.hero.damage[0]}–${state.hero.damage[1]} ${wpn.length ? '' : '(bare fists)'} · Armor ${state.hero.armor} · Tap a filled box to unequip.</p>
-    <p class="sub">Pack</p>${pack || '<p class="none">Nothing unequipped.</p>'}`;
+    ${pack}`;
 }
 
 // ---- Menus: Inventory, Log, Options ----

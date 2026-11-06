@@ -33,16 +33,17 @@ const ROOM_ENEMIES = ['goblinWarrior'];   // which enemies can appear in rooms
 // ---- Items and equipment ----
 // Consumables are used from Inventory > Items, or with "Use item" in a fight (that is your action for the round).
 const CONSUMABLES = {
-  healingPotion: { name: 'Healing Potion', heal: 6, desc: 'Restores 6 HP.' },
+  healingPotion: { name: 'Healing Potion', healPct: 0.25, desc: 'Restores 25% of max HP.' },
 };
 // Equipment slots: hand (either hand), helmet, breastplate, greaves.
+// type sorts the Equipment list: weapon, shield, helmet, armor, greaves.
 const EQUIPMENT = {
-  shortSword: { name: 'Short Sword', slot: 'hand', damage: [2, 4], desc: 'Damage 2–4.' },
-  simpleShield: { name: 'Simple Shield', slot: 'hand', armor: 1, desc: '+1 armor slot.' },
+  shortSword: { name: 'Short Sword', slot: 'hand', type: 'weapon', damage: [2, 4], desc: 'Damage 2–4.' },
+  simpleShield: { name: 'Simple Shield', slot: 'hand', type: 'shield', armor: 1, desc: '+1 armor slot.' },
 };
 // What the hero starts each run with.
 const START_KIT = {
-  items: { healingPotion: 2 },
+  items: { healingPotion: 1 },
   equipped: { rightHand: 'shortSword', leftHand: 'simpleShield', helmet: null, breastplate: null, greaves: null },
   pack: [],          // unequipped equipment
 };
