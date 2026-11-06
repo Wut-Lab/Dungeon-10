@@ -22,9 +22,11 @@ const ART = {
   <path d="M51 73 Q44 70 37 75 L39 80 Q45 77 51 78 Z" fill="#8f9ba0"/>
   <path d="M63 66 Q70 58 80 64 Q83 72 77 77 Q70 72 63 72 Z" fill="#9aa5a8"/>
   <path d="M65 73 Q72 70 79 75 L77 80 Q71 77 65 78 Z" fill="#8f9ba0"/>
-  <path class="m" d="M56 25 Q57 10 69 12 Q63 17 62 25 Z" fill="#8b2e16"/>
-  <path d="M44 27 Q58 22 72 27 V64 Q72 66 70 66 H46 Q44 66 44 64 Z" fill="#8f9ba0"/>
-  <path d="M63.5 23.6 Q68.5 24.6 72 27 V64 Q72 66 70 66 H63.5 Z" fill="#a3adb0"/>
+  <path class="m" d="M62 25 Q64 8 54 3.5 Q45 0 36 7 Q42 5.5 46 9 Q38 11 35 19 Q43 12 49 14 Q54 17 55 25 Z" fill="#7a2418"/>
+  <path class="m" d="M60.5 25 Q61 12 54 8 Q47 5 41.5 9.5 Q47.5 8.5 50.5 11.5 Q45.5 13.5 44 18.5 Q49.5 14.5 53.5 16.5 Q57 19.5 57 25 Z" fill="#b5432a"/>
+  <path class="d" d="M56 26 L62 26 L61 21 L57 21 Z" fill="#7a868b"/>
+  <path d="M44 27 Q58 22 72 27 V62 H44 Z" fill="#8f9ba0"/>
+  <path d="M63.5 23.6 Q68.5 24.6 72 27 V62 H63.5 Z" fill="#a3adb0"/>
   <path class="m" d="M44 27 Q58 22 72 27 Q58 31 44 27 Z" fill="#7a868b"/>
   <rect class="d" x="60" y="29" width="3.5" height="32" fill="#7a868b"/>
   <rect class="d" x="44" y="40" width="28" height="3.5" fill="#7a868b"/>
@@ -34,7 +36,7 @@ const ART = {
   <circle class="d" cx="66.5" cy="48" r="1" fill="#2b1d0e"/><circle class="d" cx="69.5" cy="48" r="1" fill="#2b1d0e"/>
   <circle class="d" cx="66.5" cy="52" r="1" fill="#2b1d0e"/><circle class="d" cx="69.5" cy="52" r="1" fill="#2b1d0e"/>
   <circle class="d" cx="66.5" cy="56" r="1" fill="#2b1d0e"/><circle class="d" cx="69.5" cy="56" r="1" fill="#2b1d0e"/>
-  <rect class="d" x="44" y="61" width="28" height="3" fill="#7a868b"/>
+  <rect class="m" x="43" y="61" width="30" height="3.5" rx="1" fill="#7a868b"/>
   <circle cx="40" cy="98" r="20" fill="#8a5a2b"/>
   <circle cx="40" cy="98" r="18" fill="none" stroke="#9aa5a8" stroke-width="4"/>
   <path d="M40 82 V114 M24 98 H56" stroke="#d9b44a" stroke-width="4"/>
