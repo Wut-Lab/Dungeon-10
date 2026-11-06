@@ -165,9 +165,9 @@ function playFx() {
     const slots = document.querySelectorAll(`#${side} .slot`);
     const start = state.armorStart[side], afterHit = start - af.lost;
     const breakAt = t ? t - SPEED * .45 : 0;
-    for (let i = afterHit; i < start; i++) slots[i]?.animate(BREAK, { duration: 600, delay: breakAt, fill: 'both' });
-    for (let i = afterHit; i < afterHit + af.gained; i++) slots[i]?.animate(REPAIR, { duration: 600, delay: breakAt + (af.lost ? 700 : 0), fill: af.lost ? 'forwards' : 'both' });
-    if (af.gained) figs.hero.animate([{ filter: 'none' }, { filter: 'drop-shadow(0 0 8px #f2d14a)' }, { filter: 'none' }], { duration: 600, delay: breakAt + (af.lost ? 700 : 0) });
+    for (let i = afterHit; i < start; i++) slots[i]?.animate(BREAK, { duration: 850, delay: breakAt, fill: 'both' });
+    for (let i = afterHit; i < afterHit + af.gained; i++) slots[i]?.animate(REPAIR, { duration: 850, delay: breakAt + (af.lost ? 950 : 0), fill: af.lost ? 'forwards' : 'both' });
+    if (af.gained) figs.hero.animate([{ filter: 'none' }, { filter: 'drop-shadow(0 0 8px #f2d14a)' }, { filter: 'none' }], { duration: 850, delay: breakAt + (af.lost ? 950 : 0) });
   }
 }
 
