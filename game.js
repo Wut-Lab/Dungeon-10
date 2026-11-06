@@ -44,9 +44,11 @@ function newRun() {
   Object.assign(state, {
     cell: findStart(), prev: null, dir: null, steps: 0, moveRoll: null, choosing: null, moving: false,
     visited: new Set(), foes: {}, hero: makeUnit(PLAYER), foe: null, over: false,
+    inv: { items: { ...START_KIT.items }, equipped: { ...START_KIT.equipped }, pack: [...START_KIT.pack] },
     log: ['You enter the dungeon. Roll to move.'],
   });
   state.visited.add(key(state.cell.r, state.cell.c));
+  applyGear();
   state.map.forEach((row, r) => { const c = row.indexOf('E'); if (c >= 0) state.exitKey = key(r, c); });
   $('#dungeon-name').textContent = DUNGEON_NAME;
   closeMenu();
@@ -167,6 +169,12 @@ function act(action) {
   const fTotal = fd + f.attack;
   state.lastRoll = { hd, ht: hTotal, fd, ft: fTotal };
   log.push(`You roll ${hd}${hTotal !== hd ? ` +${hTotal - hd} = ${hTotal}` : ''} vs ${f.name} ${fd} +${f.attack} = ${fTotal}`);
+
+  if (action === 'item') {
+    const id = firstItem();
+    if (!id) return;
+    log.push(useItem(id));       // drinking happens before the enemy's blow lands
+  }
 
   if (action === 'flee') {
     if (hTotal > fTotal) {
@@ -304,6 +312,9 @@ function render() {
   $('#hd-sub').textContent = r ? `rolled ${r.hd}` : 'You';
   $('#fd-sub').textContent = r ? `rolled ${r.fd}` : 'Enemy';
   $('#actions').hidden = !f;
+  const itemBtn = $('[data-act=item]'), it = firstItem();
+  itemBtn.disabled = !it;
+  itemBtn.title = it ? `Use ${CONSUMABLES[it].name} (${state.inv.items[it]} left)` : 'No items';
   $('#log').textContent = state.log.join('\n');
 
   drawMap();
@@ -344,9 +355,52 @@ function drawMap() {
   }));
 }
 
+// ---- Inventory ----
+const SLOT_NAMES = { rightHand: 'Right hand', leftHand: 'Left hand', helmet: 'Helmet', breastplate: 'Breastplate', greaves: 'Greaves' };
+// The hero's damage comes from the best equipped weapon, or bare fists.
+function applyGear() {
+  const weapons = ['rightHand', 'leftHand'].map(s => EQUIPMENT[state.inv.equipped[s]]).filter(w => w?.damage);
+  state.hero.damage = weapons.length ? weapons.reduce((a, b) => (b.damage[1] > a.damage[1] ? b : a)).damage : PLAYER.damage;
+}
+function useItem(id) {
+  const it = CONSUMABLES[id], h = state.hero;
+  if (!it || !state.inv.items[id]) return null;
+  state.inv.items[id]--;
+  const healed = Math.min(it.heal || 0, h.hp - h.hpNow);
+  h.hpNow += healed;
+  return `You drink a ${it.name} and recover ${healed} HP.`;
+}
+const firstItem = () => Object.keys(state.inv.items).find(id => state.inv.items[id] > 0);
+function equipBox(slot) {
+  const id = state.inv.equipped[slot];
+  return `<button class="gear-box ${slot}${id ? ' full' : ''}" data-slot="${slot}" title="${SLOT_NAMES[slot]}${id ? ': ' + EQUIPMENT[id].name : ' (empty)'}">
+    ${id ? ICONS[id] || '' : ''}<small>${SLOT_NAMES[slot]}</small></button>`;
+}
+function inventoryMenu() {
+  const tab = $('#menu').dataset.tab || 'items';
+  const tabs = `<div class="tabs">${['items', 'equipment'].map(t => `<button data-tab="${t}" aria-pressed="${t === tab}">${t === 'items' ? 'Items' : 'Equipment'}</button>`).join('')}</div>`;
+  if (tab === 'items') {
+    const ids = Object.keys(state.inv.items).filter(id => state.inv.items[id] > 0);
+    return `<h3>Inventory</h3>${tabs}<p class="sub">Consumables</p>` + (ids.length ? ids.map(id => `<div class="foe-row item-row">
+      <span class="row-art">${ICONS[id] || ''}</span><span class="grow">${CONSUMABLES[id].name} <b>×${state.inv.items[id]}</b><small>${CONSUMABLES[id].desc}</small></span>
+      <button class="use" data-use="${id}" ${state.foe ? 'disabled title="In a fight, use 4 · Use item"' : ''}>Use</button></div>`).join('')
+      : '<p class="none">No consumables.</p>');
+  }
+  const e = state.inv.equipped;
+  const pack = state.inv.pack.map((id, i) => `<button class="foe-row" data-pack="${i}"><span class="row-art">${ICONS[id] || ''}</span><span class="grow">${EQUIPMENT[id].name}<small>${EQUIPMENT[id].desc} Tap to equip.</small></span></button>`).join('');
+  const wpn = ['rightHand', 'leftHand'].map(s => e[s] && EQUIPMENT[e[s]]).filter(Boolean);
+  return `<h3>Inventory</h3>${tabs}
+    <div class="equip">
+      <div class="portrait">${equipBox('leftHand')}<div class="portrait-art">${ART.hero}</div>${equipBox('rightHand')}</div>
+      <div class="armor-stack">${equipBox('helmet')}${equipBox('breastplate')}${equipBox('greaves')}</div>
+    </div>
+    <p class="sub">Damage ${state.hero.damage[0]}–${state.hero.damage[1]} ${wpn.length ? '' : '(bare fists)'} · Tap a filled box to unequip.</p>
+    <p class="sub">Pack</p>${pack || '<p class="none">Nothing unequipped.</p>'}`;
+}
+
 // ---- Menus: Inventory, Log, Options ----
 const MENUS = {
-  inventory: () => `<h3>Inventory</h3><p class="none">Your pack is empty. Weapons and items are coming soon.</p>`,
+  inventory: inventoryMenu,
   log: () => {
     const ids = Object.keys(ENEMIES).filter(id => bestiary[id]);
     if (!ids.length) return `<h3>Log</h3><p class="none">No enemies encountered yet. Creatures you meet are recorded here.</p>`;
@@ -385,6 +439,23 @@ function closeMenu() {
 document.querySelectorAll('#nav button').forEach(b => b.onclick = () => openMenu(b.dataset.menu));
 $('#menu-close').onclick = closeMenu;
 $('#menu-body').onclick = e => {
+  const t = e.target.closest('[data-tab],[data-use],[data-slot],[data-pack]');
+  if (t && $('#menu').dataset.open === 'inventory') {
+    const inv = state.inv;
+    if (t.dataset.tab) $('#menu').dataset.tab = t.dataset.tab;
+    if (t.dataset.use) { state.log = [useItem(t.dataset.use)]; }
+    if (t.dataset.slot && inv.equipped[t.dataset.slot]) { inv.pack.push(inv.equipped[t.dataset.slot]); inv.equipped[t.dataset.slot] = null; }
+    if (t.dataset.pack) {
+      const i = +t.dataset.pack, id = inv.pack[i], slot = EQUIPMENT[id].slot;
+      const to = slot === 'hand' ? (inv.equipped.rightHand ? (inv.equipped.leftHand ? 'rightHand' : 'leftHand') : 'rightHand') : slot;
+      inv.pack.splice(i, 1);
+      if (inv.equipped[to]) inv.pack.push(inv.equipped[to]);   // swap out whatever was there
+      inv.equipped[to] = id;
+    }
+    applyGear(); render();
+    $('#menu-body').innerHTML = inventoryMenu();
+    return;
+  }
   const opt = e.target.closest('[data-opt]')?.dataset.opt;
   if (opt === 'restart') newRun();
   if (opt === 'title') { closeMenu(); show('title'); }

@@ -5,7 +5,7 @@ const PLAYER = {
   name: 'Hero',
   hp: 20,            // max HP
   attack: 1,         // added to the d10 in opposed rolls
-  damage: [2, 4],    // damage range rolled on a hit
+  damage: [1, 2],    // unarmed damage range; an equipped weapon replaces it
   armorBreak: 1,     // armor slots this attack breaks after a hit
   armor: 3,          // max armor slots (each negates 1 damage, min 1 damage)
   repairRate: 0.33,  // Repair restores this share of BROKEN slots, rounded up, min 1
@@ -29,3 +29,19 @@ const MAP_SETTINGS = {
 
 const ROOM_ENEMY_CHANCE = 0.25;           // chance a room (R, V or H) holds an enemy, rolled when you first enter it
 const ROOM_ENEMIES = ['goblinWarrior'];   // which enemies can appear in rooms
+
+// ---- Items and equipment ----
+// Consumables are used from Inventory > Items, or with "Use item" in a fight (that is your action for the round).
+const CONSUMABLES = {
+  healingPotion: { name: 'Healing Potion', heal: 6, desc: 'Restores 6 HP.' },
+};
+// Equipment slots: hand (either hand), helmet, breastplate, greaves.
+const EQUIPMENT = {
+  shortSword: { name: 'Short Sword', slot: 'hand', damage: [2, 4], desc: 'Damage 2–4.' },
+};
+// What the hero starts each run with.
+const START_KIT = {
+  items: { healingPotion: 2 },
+  equipped: { rightHand: 'shortSword', leftHand: null, helmet: null, breastplate: null, greaves: null },
+  pack: [],          // unequipped equipment
+};

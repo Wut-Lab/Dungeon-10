@@ -16,8 +16,9 @@ The title screen has the same download link.
 - Rooms have a 25% chance of holding an enemy. Meeting one stops your move and starts a fight.
 - The map reveals as you explore: you see every room and hallway you have visited, plus one space ahead through each opening. The exit is always visible so you know where to head.
 - Reach the **exit stairs** to win.
-- In a fight, tap an action or press **1** Attack, **2** Defend, **3** Repair, **4** Use item (coming soon), **5** Flee.
+- In a fight, tap an action or press **1** Attack, **2** Defend, **3** Repair, **4** Use item (drinks a potion), **5** Flee.
 - **Inventory**, **Log** and **Options** sit at the top of the play screen. The Log records every enemy you have met as a list; tap one to open its full card (stats, times met and defeated). It is kept between runs in your browser. Esc closes a menu.
+- **Inventory** has two tabs. **Items** lists consumables (you start with 2 Healing Potions, +6 HP each). **Equipment** shows the hero with a box by each hand and a Helmet / Breastplate / Greaves stack; tap a filled box to unequip it to your pack, tap a pack item to equip it. Your weapon sets your damage (Short Sword 2–4, bare fists 1–2).
 
 ## Files
 | File | What's in it |

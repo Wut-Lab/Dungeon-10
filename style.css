@@ -134,3 +134,20 @@ h1{font-size:clamp(2.2rem,9vw,3.4rem);color:var(--accent);margin:24px 0 0;letter
 .card-close{position:absolute;top:0;right:0;border:0;background:none;color:var(--mute);font-size:1.1rem;cursor:pointer;min-width:32px;min-height:32px}
 #menu[data-foe] #menu-close{display:none}
 .stage .die small{color:#2b1d0e;font-weight:700}
+
+/* ---- Inventory ---- */
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:4px 0 8px}
+.tabs button{font:700 .9rem Georgia,serif;min-height:36px;border-radius:6px;border:2px solid var(--line);background:var(--bg);color:var(--fg);cursor:pointer}
+.tabs button[aria-pressed=true]{border-color:var(--accent2);background:var(--accent2);color:#fff}
+.grow{flex:1;display:grid}.grow small{font-weight:400;font-size:.78rem;color:var(--mute)}
+.item-row{cursor:default}
+.use{font:700 .85rem Georgia,serif;padding:6px 12px;border-radius:6px;border:2px solid var(--accent2);background:var(--card);color:var(--fg);cursor:pointer}
+.use:disabled{opacity:.45;cursor:not-allowed}
+.equip{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;margin:6px 0}
+.portrait{position:relative;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:4px;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 4px}
+.portrait-art{height:170px;display:flex;justify-content:center}.portrait-art svg{height:100%;width:auto}
+.gear-box{width:58px;height:58px;border:2px dashed var(--line);border-radius:8px;background:var(--card);display:grid;place-items:center;align-content:center;padding:2px;cursor:pointer;color:var(--mute)}
+.gear-box.full{border-style:solid;border-color:var(--accent2)}
+.gear-box svg{width:34px;height:34px}.gear-box small{font-size:.58rem;line-height:1.1}
+.gear-box.leftHand{align-self:end;margin-bottom:22px}.gear-box.rightHand{margin-bottom:24px}
+.armor-stack{display:grid;gap:6px}
