@@ -14,19 +14,16 @@ const ENEMIES = {
   goblinWarrior: { name: 'Goblin Warrior', icon: '👺', art: 'goblinWarrior', hp: 7, attack: 1, damage: [1, 5], armorBreak: 1, armor: 1, abilities: [] },
 };
 
-// The dungeon map. One character per cell:
+// Random map settings (mapgen.js builds a new map every run). Map cells:
 //   S start room   E exit room   R room (doors on every wall)
+//   V room with doors top and bottom   H room with doors left and right
 //   | vertical hallway   - horizontal hallway   . solid rock
-// Rooms join through the hallways next to them.
-const MAP = [
-  'R-R-R-R-E',
-  '|...|...|',
-  'R-R-R.R-R',
-  '..|...|..',
-  'R-R-R-R.R',
-  '|.....|.|',
-  'S-R-R.R-R',
-];
+const MAP_SETTINGS = {
+  rows: 4, cols: 5,      // room slots (the map is rows*2-1 by cols*2-1 cells)
+  loopChance: 0.15,      // chance of an extra hallway between neighbouring rooms (makes loops)
+  trim: 3,               // dead-end rooms removed for an irregular shape
+  passRoomChance: 0.5,   // chance a straight-through room becomes a V/H room
+};
 
-const ROOM_ENEMY_CHANCE = 0.25;           // chance a room holds an enemy, rolled when you first enter it
+const ROOM_ENEMY_CHANCE = 0.25;           // chance a room (R, V or H) holds an enemy, rolled when you first enter it
 const ROOM_ENEMIES = ['goblinWarrior'];   // which enemies can appear in rooms

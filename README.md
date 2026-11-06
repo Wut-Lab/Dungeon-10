@@ -12,6 +12,7 @@ The title screen has the same download link.
 ## Controls
 - **Roll to move** (button, Space or Enter): you move 1 + d10 spaces.
 - Hallways carry you straight on. In a room with more than one way on, tap a glowing doorway or use the **arrow keys**.
+- Every run has a new random map. Some rooms only have doors on two opposite walls, so you pass straight through them.
 - Rooms have a 25% chance of holding an enemy. Meeting one stops your move and starts a fight.
 - The map reveals as you explore: you see every room and hallway you have visited, plus one space ahead through each opening.
 - Reach the **exit stairs** to win.
@@ -21,7 +22,8 @@ The title screen has the same download link.
 | File | What's in it |
 |---|---|
 | `index.html` | The page |
-| `data.js` | Game numbers: player stats, enemies, the dungeon map and encounter chance (edit these to tune the game) |
+| `data.js` | Game numbers: player stats, enemies, map settings and encounter chance (edit these to tune the game) |
+| `mapgen.js` | Builds a random dungeon map each run |
 | `game.js` | Game logic |
 | `art.js` | Paper-cutout art (SVG): characters and map tiles |
 | `bg.svg` | The rock background behind the map |

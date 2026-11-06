@@ -11,30 +11,32 @@ const intact = u => u.armor - u.broken;
 // ---- Map ----
 const DIRS = { up: [-1, 0], down: [1, 0], left: [0, -1], right: [0, 1] };
 const BACK = { up: 'down', down: 'up', left: 'right', right: 'left' };
-const at = (r, c) => MAP[r]?.[c] ?? '.';
+const at = (r, c) => state.map[r]?.[c] ?? '.';
 const key = (r, c) => r + ',' + c;
-const isRoom = ch => 'RSE'.includes(ch);
-const ROOM_NAME = { S: 'Entrance', E: 'Exit Stairs', R: 'Room', '|': 'Hallway', '-': 'Hallway' };
+const isRoom = ch => 'RSEVH'.includes(ch);
+// V rooms and | hallways only open up/down; H rooms and - hallways only left/right.
+const opens = (ch, d) => ch === '|' || ch === 'V' ? d === 'up' || d === 'down' : ch === '-' || ch === 'H' ? d === 'left' || d === 'right' : ch !== '.';
 
 // Ways out of a cell: rooms open into any hallway that runs toward them; hallways only run straight.
 function exits(r, c) {
   const here = at(r, c), out = [];
   for (const [d, [dr, dc]] of Object.entries(DIRS)) {
-    const there = at(r + dr, c + dc), vertical = d === 'up' || d === 'down';
-    if (here === '|' && !vertical || here === '-' && vertical) continue;
-    if (there === '|' && vertical || there === '-' && !vertical || isRoom(there) && !isRoom(here)) out.push(d);
+    const there = at(r + dr, c + dc);
+    // Both cells must open toward each other, and rooms only join through hallways.
+    if (opens(here, d) && opens(there, BACK[d]) && !(isRoom(here) && isRoom(there))) out.push(d);
   }
   return out;
 }
 
-function findStart() { for (let r = 0; r < MAP.length; r++) { const c = MAP[r].indexOf('S'); if (c >= 0) return { r, c }; } }
+function findStart() { for (let r = 0; r < state.map.length; r++) { const c = state.map[r].indexOf('S'); if (c >= 0) return { r, c }; } }
 
 function newRun() {
-  state = {
+  state = { map: generateMap() };
+  Object.assign(state, {
     cell: findStart(), prev: null, dir: null, steps: 0, moveRoll: null, choosing: null, moving: false,
     visited: new Set(), foes: {}, hero: makeUnit(PLAYER), foe: null, over: false,
     log: ['You enter the dungeon. Roll to move.'],
-  };
+  });
   state.visited.add(key(state.cell.r, state.cell.c));
   show('play');
   render();
@@ -100,7 +102,7 @@ function enterCell() {
   const first = !state.visited.has(k);
   state.visited.add(k);
   if (ch === 'E') { state.steps = 0; state.log.push('You find the stairs out of the dungeon!'); return end(true); }
-  if (ch === 'R' && first && Math.random() < ROOM_ENEMY_CHANCE) {
+  if ('RVH'.includes(ch) && first && Math.random() < ROOM_ENEMY_CHANCE) {
     const id = ROOM_ENEMIES[Math.floor(Math.random() * ROOM_ENEMIES.length)];
     state.foes[k] = makeUnit(ENEMIES[id]);
   }
@@ -288,7 +290,7 @@ function render() {
 
 function drawMap() {
   const b = $('#board');
-  b.style.setProperty('--cols', MAP[0].length);
+  b.style.setProperty('--cols', state.map[0].length);
   b.innerHTML = '';
   const choiceAt = {};
   for (const d of state.choosing || []) choiceAt[key(state.cell.r + DIRS[d][0], state.cell.c + DIRS[d][1])] = d;
@@ -298,7 +300,7 @@ function drawMap() {
     const [r, c] = k.split(',').map(Number);
     for (const d of exits(r, c)) seen.add(key(r + DIRS[d][0], c + DIRS[d][1]));
   }
-  MAP.forEach((row, r) => [...row].forEach((ch, c) => {
+  state.map.forEach((row, r) => [...row].forEach((ch, c) => {
     const k = key(r, c), cell = document.createElement(choiceAt[k] ? 'button' : 'div');
     const shown = ch !== '.' && seen.has(k);
     cell.className = 'cell' + (ch === '.' ? ' rock' : shown ? '' : ' hidden') + (shown && !state.visited.has(k) ? ' fog' : '') + (choiceAt[k] ? ' pick' : '');
