@@ -11,12 +11,14 @@ const ART = {
   <path d="M45 69 Q58 64 71 69 L72 96 L44 96 Z" fill="#9aa5a8"/>
   <rect x="40" y="103" width="36" height="7" fill="#5a3b1e"/>
   <rect x="54" y="102" width="8" height="9" fill="#d9b44a"/>
+  <g class="wpn sword">
   <path d="M70 64 L91 89 L85 95 L66 72 Z" fill="#2f5d50"/>
   <rect x="85" y="89" width="6" height="15" fill="#5a3b1e"/>
   <circle cx="88" cy="106" r="3.5" fill="#d9b44a"/>
   <path d="M85 89 L92 89 L99 30 L95 23 L91 30 Z" fill="#cfd6d8"/>
   <path d="M78 87 L99 85 L99 91 L78 93 Z" fill="#d9b44a"/>
   <circle cx="88" cy="96" r="5.5" fill="#7a868b"/>
+  </g>
   <path d="M46 66 L36 88 L43 91 L52 72 Z" fill="#2f5d50"/>
   <path d="M53 66 Q46 58 36 64 Q33 72 39 77 Q46 72 53 72 Z" fill="#9aa5a8"/>
   <path d="M51 73 Q44 70 37 75 L39 80 Q45 77 51 78 Z" fill="#8f9ba0"/>
@@ -53,10 +55,12 @@ const ART = {
   <path d="M50 82 H74 L75 92 H49 Z M49 100 H75 L77 110 H47 Z" fill="#8a6a3a"/>
   <rect x="45" y="115" width="35" height="7" fill="#3a2a18"/>
   <circle cx="89" cy="106" r="5" fill="#7fa043"/>
+  <g class="wpn axe">
   <path d="M18 34 L23 33 L39 132 L34 133 Z" fill="#6b4a2a"/>
   <path d="M21 38 L8 33 Q1 48 9 63 L24 56 Z" fill="#9aa5a8"/>
   <path d="M8 33 Q1 48 9 63" fill="none" stroke="#cfd6d8" stroke-width="3" stroke-linecap="round"/>
   <circle cx="31" cy="99" r="6" fill="#7fa043"/>
+  </g>
   <path d="M36 78 Q44 67 55 73 L53 83 Q45 79 39 85 Z" fill="#5a3b1e"/>
   <circle cx="46" cy="76" r="1.6" fill="#9aa5a8"/><circle cx="41" cy="80" r="1.6" fill="#9aa5a8"/>
   <path d="M44 51 L12 40 L44 63 Z" fill="#6f8f3a"/>

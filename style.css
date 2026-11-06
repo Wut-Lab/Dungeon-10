@@ -50,12 +50,6 @@ h1{font-size:clamp(2.2rem,9vw,3.4rem);color:var(--accent);margin:24px 0 0;letter
 .fig svg{height:100%;width:auto;overflow:visible}
 .paper>*{filter:drop-shadow(1.5px 2.5px 0 rgba(43,29,14,.35))}
 .fig.hero svg{transform:rotate(-2deg)}.fig.foe-fig svg{transform:rotate(2deg)}
-.fig.lunge.hero{animation:lungeR .45s ease-out}.fig.lunge.foe-fig{animation:lungeL .45s ease-out}
-.fig.hurt{animation:hurt .5s ease-out .2s}
-.fig.mend::after{content:"✦ +armor";position:absolute;top:0;left:50%;transform:translateX(-50%);font:700 .9rem Georgia,serif;color:var(--accent2);animation:rise 1s ease-out forwards}
-@keyframes lungeR{40%{transform:translateX(22px) rotate(4deg)}}
-@keyframes lungeL{40%{transform:translateX(-22px) rotate(-4deg)}}
-@keyframes hurt{20%,60%{transform:translateX(-6px);filter:sepia(1) saturate(4) hue-rotate(-30deg)}40%,80%{transform:translateX(6px)}}
 @keyframes rise{from{opacity:1;top:10px}to{opacity:0;top:-20px}}
 #dice{position:relative;z-index:1;align-self:center;flex-direction:column;gap:4px}
 .die{width:58px;height:58px;transform:rotate(-4deg);box-shadow:2px 3px 0 rgba(43,29,14,.35)}
@@ -76,3 +70,6 @@ h1{font-size:clamp(2.2rem,9vw,3.4rem);color:var(--accent);margin:24px 0 0;letter
 @keyframes pop{from{transform:scale(1.6);opacity:0}}
 .paper>.d{filter:drop-shadow(.4px .6px 0 rgba(43,29,14,.3))}
 .paper>.m{filter:drop-shadow(.8px 1.2px 0 rgba(43,29,14,.32))}
+.wpn{transform-box:view-box}
+.wpn.sword{transform-origin:68px 68px}.wpn.axe{transform-origin:31px 99px}
+.slot{transform-origin:50% 60%}

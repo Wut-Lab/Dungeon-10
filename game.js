@@ -49,6 +49,7 @@ function act(action) {
   state.fx = [];
   state.armorFx = { hero: { lost: 0, gained: 0 }, foe: { lost: 0, gained: 0 } };
   const startIntact = intact(h);
+  state.armorStart = { hero: startIntact, foe: intact(f) };
   const hd = d10(), fd = d10();
   // Attacking uses the attack bonus; other actions roll a plain d10.
   const hTotal = hd + (action === 'attack' || action === 'flee' ? h.attack : 0);
@@ -124,16 +125,50 @@ function unitHud(u, el) {
   el.querySelector('.stats').textContent = `Atk +${u.attack} · Dmg ${u.damage[0]}–${u.damage[1]} · Break ${u.armorBreak}`;
 }
 
-// Round animations: attacker lunges, defender shakes; repair glints.
+// Round animations (Web Animations API). Skipped when the player prefers reduced motion.
+const calm = matchMedia('(prefers-reduced-motion: reduce)');
+const ATTACK = {
+  // Knight: step forward and thrust the sword (arm pivots at the shoulder).
+  hero: { body: [{ transform: 'none' }, { transform: 'translateX(-4px)', offset: .3 }, { transform: 'translateX(26px)', offset: .6 }, { transform: 'none' }],
+          wpn: [{ transform: 'none' }, { transform: 'rotate(-15deg)', offset: .3 }, { transform: 'rotate(68deg) translateX(6px)', offset: .6 }, { transform: 'none' }] },
+  // Goblin: step forward, raise the axe back, then chop down (axe pivots at the hand).
+  foe:  { body: [{ transform: 'none' }, { transform: 'translateX(4px)', offset: .3 }, { transform: 'translateX(-26px)', offset: .6 }, { transform: 'none' }],
+          wpn: [{ transform: 'none' }, { transform: 'rotate(30deg)', offset: .3 }, { transform: 'rotate(-80deg)', offset: .6 }, { transform: 'none' }] },
+};
+const HURT = [{ transform: 'none' }, { transform: 'translateX(-6px)', filter: 'sepia(1) saturate(4) hue-rotate(-30deg)', offset: .2 },
+  { transform: 'translateX(6px)', offset: .4 }, { transform: 'translateX(-4px)', offset: .6 }, { transform: 'none', filter: 'none' }];
+const BREAK = [{ transform: 'none', background: 'var(--accent2)', opacity: 1 },
+  { transform: 'scale(1.5) rotate(-12deg)', background: 'var(--accent)', opacity: 1, offset: .35 },
+  { transform: 'translateY(5px) rotate(18deg) scale(.7)', background: 'var(--accent)', opacity: .2, offset: .7 },
+  { transform: 'none', background: 'var(--line)', opacity: .6 }];
+const REPAIR = [{ transform: 'scale(.6)', background: 'var(--line)', opacity: .6, filter: 'none' },
+  { transform: 'scale(1.6)', background: '#f2d14a', opacity: 1, filter: 'drop-shadow(0 0 6px #f2d14a)', offset: .45 },
+  { transform: 'none', background: 'var(--accent2)', opacity: 1, filter: 'none' }];
+const SPEED = 650; // ms for one attack
+
 function playFx() {
   const figs = { hero: $('#fig-hero'), foe: $('#fig-foe') };
-  for (const el of Object.values(figs)) el.classList.remove('lunge', 'hurt', 'mend');
-  void document.body.offsetWidth; // restart CSS animations
-  for (const fx of state.fx || []) {
-    if (fx.repair) figs.hero.classList.add('mend');
-    else { figs[fx.att].classList.add('lunge'); figs[fx.def].classList.add('hurt'); }
-  }
   for (const d of ['#hd', '#fd']) { const el = $(d).parentElement; el.classList.remove('roll'); void el.offsetWidth; el.classList.add('roll'); }
+  if (calm.matches) return;
+  // Attacks play one after another (a tie shows both); each defender flinches as the blow lands.
+  let t = 0;
+  for (const fx of (state.fx || []).filter(x => !x.repair)) {
+    const fig = figs[fx.att], a = ATTACK[fx.att];
+    fig.animate(a.body, { duration: SPEED, delay: t, easing: 'ease-in-out' });
+    fig.querySelector('.wpn')?.animate(a.wpn, { duration: SPEED, delay: t, easing: 'ease-in-out' });
+    figs[fx.def].animate(HURT, { duration: 400, delay: t + SPEED * .55 });
+    t += SPEED;
+  }
+  // Shield symbols: slots that broke crack and fall; slots that came back glow and pop in.
+  for (const side of ['hero', 'foe']) {
+    const af = state.armorFx?.[side]; if (!af) continue;
+    const slots = document.querySelectorAll(`#${side} .slot`);
+    const start = state.armorStart[side], afterHit = start - af.lost;
+    const breakAt = t ? t - SPEED * .45 : 0;
+    for (let i = afterHit; i < start; i++) slots[i]?.animate(BREAK, { duration: 600, delay: breakAt, fill: 'both' });
+    for (let i = afterHit; i < afterHit + af.gained; i++) slots[i]?.animate(REPAIR, { duration: 600, delay: breakAt + (af.lost ? 700 : 0), fill: af.lost ? 'forwards' : 'both' });
+    if (af.gained) figs.hero.animate([{ filter: 'none' }, { filter: 'drop-shadow(0 0 8px #f2d14a)' }, { filter: 'none' }], { duration: 600, delay: breakAt + (af.lost ? 700 : 0) });
+  }
 }
 
 function render() {
