@@ -28,9 +28,9 @@ h1{font-size:clamp(2.2rem,9vw,3.4rem);color:var(--accent);margin:24px 0 0;letter
 #actions button:disabled{opacity:.45;cursor:not-allowed}
 #log,#end-log{width:100%;white-space:pre-wrap;font:.9rem/1.5 Georgia,serif;text-align:left;margin:0;color:var(--fg);background:var(--card);border:1px dashed var(--line);border-radius:8px;padding:10px;min-height:3em}
 #log:empty{display:none}
-#board{display:grid;grid-template-columns:repeat(var(--cols),1fr);width:100%;background:#3d3020;border:3px solid var(--line);border-radius:10px;padding:4px;gap:0}
+#board{display:grid;grid-template-columns:repeat(var(--cols),1fr);width:100%;background:#33261a url(bg.svg) 0 0/240px 240px;border:3px solid var(--line);border-radius:10px;padding:4px;gap:0}
 .cell{position:relative;aspect-ratio:1;padding:0;border:0;background:none;font:inherit;color:inherit}
-.cell.rock{background:#3d3020}
+.cell.rock,.cell.hidden{background:none}
 .cell .tile-art{position:absolute;inset:0;width:100%;height:100%;filter:drop-shadow(1px 1.5px 0 rgba(0,0,0,.35))}
 .tile-art .d{filter:drop-shadow(.3px .5px 0 rgba(0,0,0,.3))}
 .cell.fog .tile-art{filter:brightness(.72) saturate(.7)}

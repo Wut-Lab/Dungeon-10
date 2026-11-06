@@ -292,10 +292,17 @@ function drawMap() {
   b.innerHTML = '';
   const choiceAt = {};
   for (const d of state.choosing || []) choiceAt[key(state.cell.r + DIRS[d][0], state.cell.c + DIRS[d][1])] = d;
+  // Fog of war: you see every cell you've visited, plus one cell ahead through each of their exits.
+  const seen = new Set(state.visited);
+  for (const k of state.visited) {
+    const [r, c] = k.split(',').map(Number);
+    for (const d of exits(r, c)) seen.add(key(r + DIRS[d][0], c + DIRS[d][1]));
+  }
   MAP.forEach((row, r) => [...row].forEach((ch, c) => {
     const k = key(r, c), cell = document.createElement(choiceAt[k] ? 'button' : 'div');
-    cell.className = 'cell' + (ch === '.' ? ' rock' : '') + (!state.visited.has(k) && ch !== '.' ? ' fog' : '') + (choiceAt[k] ? ' pick' : '');
-    if (ch !== '.') cell.innerHTML = TILE_ART[ch];
+    const shown = ch !== '.' && seen.has(k);
+    cell.className = 'cell' + (ch === '.' ? ' rock' : shown ? '' : ' hidden') + (shown && !state.visited.has(k) ? ' fog' : '') + (choiceAt[k] ? ' pick' : '');
+    if (shown) cell.innerHTML = TILE_ART[ch];
     if (state.foes[k]) cell.insertAdjacentHTML('beforeend', `<div class="mini foe-mini">${ART[state.foes[k].art]}</div>`);
     if (state.cell.r === r && state.cell.c === c) cell.insertAdjacentHTML('beforeend', `<div class="mini hero-mini">${ART.hero}</div>`);
     if (choiceAt[k]) {

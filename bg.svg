@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="240" viewBox="0 0 240 240">
+  <!-- Tileable paper-cutout dungeon rock: layered stone slabs, cracks, bones, mushrooms and roots. -->
+  <defs>
+    <filter id="s" x="-10%" y="-10%" width="130%" height="130%"><feDropShadow dx="1.2" dy="2" stdDeviation="0" flood-color="#000" flood-opacity=".35"/></filter>
+    <filter id="t" x="-10%" y="-10%" width="130%" height="130%"><feDropShadow dx=".5" dy=".8" stdDeviation="0" flood-color="#000" flood-opacity=".3"/></filter>
+  </defs>
+  <rect width="240" height="240" fill="#33261a"/>
+  <g filter="url(#s)">
+    <path d="M-10 8 L34 -4 L62 14 L56 46 L18 54 L-10 40 Z" fill="#3f3022"/>
+    <path d="M230 8 L274 -4 L302 14 L296 46 L258 54 L230 40 Z" fill="#3f3022"/>
+    <path d="M-10 248 L34 236 L62 254 L56 286 L18 294 L-10 280 Z" fill="#3f3022"/>
+    <path d="M230 248 L274 236 L302 254 L296 286 L258 294 L230 280 Z" fill="#3f3022"/>
+    <path d="M86 20 L132 12 L150 38 L138 66 L96 70 L78 46 Z" fill="#45352a"/>
+    <path d="M168 40 L208 30 L226 58 L214 92 L176 96 L160 70 Z" fill="#3b2d20"/>
+    <path d="M24 92 L66 84 L82 112 L72 140 L34 146 L16 120 Z" fill="#41322a"/>
+    <path d="M104 100 L146 92 L166 118 L156 152 L114 156 L96 128 Z" fill="#3a2b1f"/>
+    <path d="M184 128 L226 122 L240 146 L232 176 L192 180 L176 154 Z" fill="#433326"/>
+    <path d="M-56 128 L-14 122 L0 146 L-8 176 L-48 180 L-64 154 Z" fill="#433326"/>
+    <path d="M40 172 L84 166 L100 192 L90 222 L52 228 L32 200 Z" fill="#3d2e21"/>
+    <path d="M124 186 L160 178 L176 202 L168 230 L132 236 L116 210 Z" fill="#45352a"/>
+  </g>
+  <g fill="none" stroke="#241a11" stroke-width="1.6" stroke-linecap="round">
+    <path d="M100 34 L112 44 L108 56"/><path d="M182 60 L194 66 L200 80"/>
+    <path d="M44 104 L52 118 L48 130"/><path d="M128 118 L136 128 L148 132"/>
+    <path d="M60 186 L70 196 L66 210"/><path d="M200 140 L208 152"/>
+  </g>
+  <g filter="url(#t)">
+    <!-- bones -->
+    <g transform="rotate(-25 84 82)"><rect x="72" y="80" width="24" height="4" rx="2" fill="#d8ccb0"/><circle cx="72" cy="80" r="3" fill="#d8ccb0"/><circle cx="72" cy="84" r="3" fill="#d8ccb0"/><circle cx="96" cy="80" r="3" fill="#d8ccb0"/><circle cx="96" cy="84" r="3" fill="#d8ccb0"/></g>
+    <!-- skull -->
+    <g transform="translate(160 206)"><path d="M0 0 Q0 -12 10 -12 Q20 -12 20 0 L17 4 V8 H3 V4 Z" fill="#d8ccb0"/><circle cx="6" cy="-2" r="2.6" fill="#33261a"/><circle cx="14" cy="-2" r="2.6" fill="#33261a"/><path d="M8 5 V8 M12 5 V8" stroke="#33261a" stroke-width="1"/></g>
+    <!-- mushrooms -->
+    <g transform="translate(12 160)"><rect x="4" y="0" width="3" height="8" fill="#e6dcc4"/><path d="M-1 1 Q5 -8 12 1 Z" fill="#b5432a"/><circle cx="3" cy="-2" r="1" fill="#f3e9d2"/><circle cx="8" cy="-1" r="1" fill="#f3e9d2"/></g>
+    <g transform="translate(26 166) scale(.7)"><rect x="4" y="0" width="3" height="8" fill="#e6dcc4"/><path d="M-1 1 Q5 -8 12 1 Z" fill="#b5432a"/></g>
+    <g transform="translate(150 84)"><rect x="4" y="0" width="3" height="7" fill="#e6dcc4"/><path d="M-1 1 Q5 -7 12 1 Z" fill="#7fbfa8"/></g>
+    <!-- roots -->
+    <path d="M200 0 Q196 14 204 22 Q210 30 204 40" fill="none" stroke="#5a3b1e" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="M200 240 Q196 254 204 262" fill="none" stroke="#5a3b1e" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="M203 22 Q214 22 220 30" fill="none" stroke="#5a3b1e" stroke-width="1.5" stroke-linecap="round"/>
+    <!-- pebbles -->
+    <circle cx="70" cy="58" r="3" fill="#57463a"/><circle cx="78" cy="62" r="2" fill="#4d3d30"/>
+    <circle cx="112" cy="170" r="2.5" fill="#57463a"/><circle cx="218" cy="112" r="2" fill="#4d3d30"/>
+    <circle cx="8" cy="66" r="2.5" fill="#57463a"/>
+  </g>
+</svg>
