@@ -40,8 +40,13 @@ function generateMap(cfg = MAP_SETTINGS) {
     return [...dist].sort((a, b) => b[1] - a[1])[0][0];
   };
   const pool = [...rooms], start = far(far(pool[rnd(pool.length)])), exit = far(start);
+  // 5. One shop: a random room at least shopMinDistance steps (rooms and hallways) from both the Entrance and the Exit.
+  const steps = from => { const d = new Map([[from, 0]]), q = [from]; while (q.length) { const i = q.shift(); for (const j of linked(i)) if (!d.has(j)) { d.set(j, d.get(i) + 2); q.push(j); } } return d; };
+  const dS = steps(start), dE = steps(exit), min = cfg.shopMinDistance ?? 2;
+  const shopPool = pool.filter(i => i !== start && i !== exit && dS.get(i) >= min && dE.get(i) >= min);
+  const shop = shopPool.length ? shopPool[rnd(shopPool.length)] : -1;
 
-  // 5. Draw it as text: rooms at even cells, hallways between linked rooms.
+  // 6. Draw it as text: rooms at even cells, hallways between linked rooms.
   const grid = Array.from({ length: rows * 2 - 1 }, () => Array(cols * 2 - 1).fill('.'));
   for (const l of links) {
     const [a, b] = l.split(':').map(Number), [ra, ca] = [Math.floor(a / cols), a % cols], [rb, cb] = [Math.floor(b / cols), b % cols];
@@ -52,6 +57,7 @@ function generateMap(cfg = MAP_SETTINGS) {
     let ch = 'R';
     const vert = ns.length === 2 && ns.every(([dr]) => dr !== 0), horiz = ns.length === 2 && ns.every(([, dc]) => dc !== 0);
     if ((vert || horiz) && Math.random() < cfg.passRoomChance) ch = vert ? 'V' : 'H';
+    if (i === shop) ch = '$';
     if (i === start) ch = 'S';
     if (i === exit) ch = 'E';
     grid[r * 2][c * 2] = ch;

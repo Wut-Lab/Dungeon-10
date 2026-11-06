@@ -127,6 +127,9 @@ const TILE_ART = {
   V: roomBase('', 'tb'),
   H: roomBase('', 'lr'),
   S: roomBase(`<path class="d" d="M38 30 H62 V70 L50 62 L38 70 Z" fill="#8b2e16"/><path class="d" d="M42 36 H58 M42 42 H58" stroke="#d9b44a" stroke-width="2"/>`),
+  $: roomBase(`<path class="d" d="M26 30 H74 L70 42 H30 Z" fill="#c9a24a"/><path class="d" d="M34 30 L33 42 M46 30 V42 M54 30 V42 M66 30 L67 42" stroke="#8b2e16" stroke-width="5"/>
+    <rect class="d" x="30" y="56" width="40" height="14" fill="#6b4a2a"/><rect class="d" x="30" y="56" width="40" height="3" fill="#8a6a3a"/>
+    <circle class="d" cx="44" cy="51" r="5" fill="#f2c94c" stroke="#9a7412" stroke-width="1.5"/><path class="d" d="M56 46 h6 v8 h-6z" fill="#c0392b"/>`),
   E: roomBase(`<rect class="d" x="28" y="28" width="44" height="44" fill="#2b1d0e"/>
     <rect class="d" x="28" y="28" width="44" height="9" fill="#a89070"/><rect class="d" x="28" y="37" width="44" height="9" fill="#8c7556"/>
     <rect class="d" x="28" y="46" width="44" height="9" fill="#6f5c42"/><rect class="d" x="28" y="55" width="44" height="9" fill="#54452f"/>`),
@@ -140,6 +143,7 @@ const TILE_ART = {
 
 // Small icons for inventory boxes and lists.
 const ICONS = {
+  repairKit: `<svg viewBox="0 0 40 40" class="paper"><path d="M20 4l14 6v10c0 9-6 14-14 17C12 34 6 29 6 20V10z" fill="#2f5d50"/><path d="M14 26l10-10" stroke="#5a3b1e" stroke-width="4" stroke-linecap="round" class="d"/><rect x="21" y="9" width="11" height="7" rx="1.5" transform="rotate(45 26.5 12.5)" fill="#9aa5a8" class="d"/></svg>`,
   healingPotion: `<svg viewBox="0 0 40 40" class="paper"><rect x="16" y="4" width="8" height="6" rx="1" fill="#8a5a2b"/><path d="M17 10h6v5c6 2 9 7 9 12a12 11 0 0 1-24 0c0-5 3-10 9-12z" fill="#e8dcc0"/><path d="M9.5 26h21a10.5 9 0 0 1-21 0z" fill="#c0392b"/><circle cx="16" cy="28" r="1.6" fill="#fff8" class="d"/></svg>`,
   shortSword: `<svg viewBox="0 0 40 40" class="paper"><path d="M27 5l4 4-15 15-4-4z" fill="#d5dbe0"/><path d="M27 5l4 4-15 15z" fill="#aab3bb" class="d"/><rect x="7" y="20" width="13" height="3" rx="1" transform="rotate(45 13.5 21.5)" fill="#c9a24a"/><rect x="6" y="25" width="4" height="8" rx="1" transform="rotate(45 8 29)" fill="#5a3b1e"/><circle cx="5" cy="35" r="2.2" fill="#c9a24a"/></svg>`,
   dirtyShoes: `<svg viewBox="0 0 40 40" class="paper"><path d="M6 30c0-5 3-8 4-14h9c0 5 4 7 9 8 4 1 7 3 7 6v3H6z" fill="#7a5532"/><path d="M6 33h29v-3H6z" fill="#3b2a1a"/><path d="M10 16h9" stroke="#5a3b1e" stroke-width="3" class="d"/><circle cx="14" cy="27" r="2.5" fill="#5b4a2a" class="d"/><circle cx="25" cy="29" r="2" fill="#5b4a2a" class="d"/><circle cx="30" cy="26" r="1.5" fill="#5b4a2a" class="d"/></svg>`,

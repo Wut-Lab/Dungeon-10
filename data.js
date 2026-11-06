@@ -23,7 +23,7 @@ const ENEMIES = {
 };
 
 // Random map settings (mapgen.js builds a new map every run). Map cells:
-//   S start room   E exit room   R room (doors on every wall)
+//   S start room   E exit room   $ shop (one per map)   R room (doors on every wall)
 //   V room with doors top and bottom   H room with doors left and right
 //   | vertical hallway   - horizontal hallway   . solid rock
 const MAP_SETTINGS = {
@@ -31,6 +31,7 @@ const MAP_SETTINGS = {
   loopChance: 0.15,      // chance of an extra hallway between neighbouring rooms (makes loops)
   trim: 3,               // dead-end rooms removed for an irregular shape
   passRoomChance: 0.5,   // chance a straight-through room becomes a V/H room
+  shopMinDistance: 2,    // the shop is at least this many steps (rooms + hallways) from the Entrance and the Exit
 };
 
 const ROOM_ENEMY_CHANCE = 0.25;           // chance a room (R, V or H) holds an enemy, rolled when you first enter it
@@ -54,3 +55,10 @@ const START_KIT = {
   equipped: { rightHand: 'shortSword', leftHand: 'simpleShield', helmet: null, breastplate: null, greaves: null },
   pack: [],          // unequipped equipment
 };
+
+// The shop: one per map. Entering it ends your move. price is in gold; stock is per shop (omit for unlimited).
+const SHOP_STOCK = [
+  { id: 'healingPotion', price: 15 },
+  { id: 'repairKit', price: 10, desc: 'Repair all broken armor slots.' },
+  { id: 'dirtyShoes', price: 25, stock: 1 },
+];

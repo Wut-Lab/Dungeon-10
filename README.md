@@ -15,6 +15,7 @@ The title screen has the same download link.
 - Every run has a new random map. Some rooms only have doors on two opposite walls, so you pass straight through them.
 - Rooms have a 25% chance of holding an enemy. Meeting one stops your move and starts a fight.
 - The map reveals as you explore: you see every room and hallway you have visited, plus one space ahead through each opening. The exit is always visible so you know where to head.
+- Every map has one **shop** (striped awning), at least 2 steps from the entrance and the exit. Entering it ends your move. It sells Healing Potions (15 gold), a full Armor Repair (10 gold) and one pair of Dirty Shoes (25 gold).
 - Reach the **exit stairs** to win.
 - In a fight, tap an action or press **1** Attack, **2** Defend, **3** Repair, **4** Use item (drinks a potion), **5** Flee.
 - **Inventory**, **Log** and **Options** sit at the top of the play screen. The Log records every enemy you have met as a list; tap one to open its full card (stats, times met and defeated). It is kept between runs in your browser. Esc closes a menu.

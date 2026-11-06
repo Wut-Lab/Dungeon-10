@@ -178,3 +178,4 @@ button:not(:disabled):active{transform:scale(.94);filter:brightness(.92)}
 .new-tag{font:700 .65rem Georgia,serif;color:#2b1d0e;background:#f2c94c;border-radius:4px;padding:1px 5px;vertical-align:middle}
 .new-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#f2c94c;box-shadow:0 0 0 1px var(--accent);vertical-align:middle}
 .wpn.bow{transform-origin:31px 92px}.shaft{transform-box:view-box}
+.shop{border-color:#c9a24a}.shop .gold{margin-left:0}.buy{min-width:64px}.left{display:inline!important;color:var(--accent)!important}

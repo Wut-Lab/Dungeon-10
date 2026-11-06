@@ -22,7 +22,7 @@ const DIRS = { up: [-1, 0], down: [1, 0], left: [0, -1], right: [0, 1] };
 const BACK = { up: 'down', down: 'up', left: 'right', right: 'left' };
 const at = (r, c) => state.map[r]?.[c] ?? '.';
 const key = (r, c) => r + ',' + c;
-const isRoom = ch => 'RSEVH'.includes(ch);
+const isRoom = ch => 'RSEVH$'.includes(ch);
 // V rooms and | hallways only open up/down; H rooms and - hallways only left/right.
 const opens = (ch, d) => ch === '|' || ch === 'V' ? d === 'up' || d === 'down' : ch === '-' || ch === 'H' ? d === 'left' || d === 'right' : ch !== '.';
 
@@ -45,7 +45,8 @@ function newRun() {
     cell: findStart(), prev: null, dir: null, steps: 0, moveRoll: null, choosing: null, moving: false,
     visited: new Set(), foes: {}, hero: makeUnit(PLAYER), foe: null, over: false,
     inv: { items: { ...START_KIT.items }, equipped: { ...START_KIT.equipped }, pack: [...START_KIT.pack] },
-    gold: 0, newItems: new Set(),   // newItems: picked up but not looked at yet
+    gold: 0, newItems: new Set(), shopping: false,
+    shopStock: SHOP_STOCK.map(s => ({ ...s })),   // newItems: picked up but not looked at yet
     log: ['You enter the dungeon. Roll to move.'],
   });
   state.visited.add(key(state.cell.r, state.cell.c));
@@ -77,6 +78,7 @@ function spinDie(el) { if (!calm.matches) el.querySelector('.d10')?.animate(DIE_
 
 async function rollMove() {
   if (state.foe || state.over || state.moving || state.steps) return;
+  state.shopping = false;
   const die = d10();
   state.moveRoll = die;
   state.steps = 1 + die;
@@ -131,6 +133,7 @@ function enterCell() {
   const { r, c } = state.cell, k = key(r, c), ch = at(r, c);
   const first = !state.visited.has(k);
   state.visited.add(k);
+  if (ch === '$') { state.steps = 0; if (first) state.log.push('You find a shop! Your move ends here.'); state.shopping = true; return; }
   if (ch === 'E') { state.steps = 0; state.log.push('You find the stairs out of the dungeon!'); return end(true); }
   if ('RVH'.includes(ch) && first && Math.random() < ROOM_ENEMY_CHANCE) {
     const id = ROOM_ENEMIES[Math.floor(Math.random() * ROOM_ENEMIES.length)];
@@ -333,6 +336,7 @@ function render() {
   $('#log').textContent = state.log.join('\n');
 
   drawMap();
+  drawShop();
   const moving = !f && !state.over;
   $('#move').hidden = !moving;
   $('#roll-move').disabled = !!(state.steps || state.moving);
@@ -451,6 +455,32 @@ function inventoryMenu() {
     ${pack}`;
 }
 
+// ---- Shop ----
+const shopName = s => s.id === 'repairKit' ? 'Armor Repair' : (CONSUMABLES[s.id] || EQUIPMENT[s.id]).name;
+function drawShop() {
+  const el = $('#shop');
+  el.hidden = !state.shopping || !!state.foe || state.over;
+  if (el.hidden) return;
+  const h = state.hero;
+  el.innerHTML = `<h3>Shop</h3><p class="sub">You have <span class="gold"><i></i>${state.gold}</span>. Roll to move when you're done.</p>` + state.shopStock.map((s, i) => {
+    const soldOut = s.stock === 0, nothingToFix = s.id === 'repairKit' && !h.broken;
+    const desc = s.desc || (CONSUMABLES[s.id] || EQUIPMENT[s.id]).desc;
+    const why = soldOut ? 'Sold out' : nothingToFix ? 'Armor is whole' : state.gold < s.price ? 'Not enough gold' : '';
+    return `<div class="foe-row item-row"><span class="row-art">${ICONS[s.id] || ''}</span>
+      <span class="grow">${shopName(s)}${s.stock ? ` <small class="left">${s.stock} left</small>` : ''}<small>${desc}</small></span>
+      <button class="use buy" data-buy="${i}" ${why ? `disabled title="${why}"` : ''}><span class="gold"><i></i>${s.price}</span></button></div>`;
+  }).join('');
+}
+function buy(i) {
+  const s = state.shopStock[i], h = state.hero;
+  if (!s || s.stock === 0 || state.gold < s.price) return;
+  if (s.id === 'repairKit') { if (!h.broken) return; state.log = [`You pay ${s.price} gold and your armor is fully repaired (${h.broken} slot${h.broken > 1 ? 's' : ''}).`]; h.broken = 0; }
+  else state.log = [gainItem(s.id).replace('You found', 'You bought')];
+  state.gold -= s.price;
+  if (s.stock) s.stock--;
+  render();
+}
+
 // ---- Menus: Inventory, Log, Options ----
 const MENUS = {
   inventory: inventoryMenu,
@@ -522,6 +552,7 @@ $('#menu-body').onclick = e => {
 $('#start').onclick = newRun;
 $('#again').onclick = newRun;
 $('#roll-move').onclick = rollMove;
+$('#shop').onclick = e => { const b = e.target.closest('[data-buy]'); if (b) buy(+b.dataset.buy); };
 document.querySelectorAll('#actions button').forEach(btn => btn.onclick = () => act(btn.dataset.act));
 addEventListener('keydown', e => {
   if (!$('#title').hidden && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); return newRun(); }
