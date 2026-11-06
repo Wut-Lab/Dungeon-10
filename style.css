@@ -165,3 +165,15 @@ button:not(:disabled):active{transform:scale(.94);filter:brightness(.92)}
 .group-box summary::before{content:"▸";transition:transform .15s}
 .group-box[open] summary::before{transform:rotate(90deg)}
 .count{margin-left:auto;font-size:.72rem;color:var(--mute);letter-spacing:0}
+
+/* ---- Gold and new-item feedback ---- */
+.gold{display:inline-flex;align-items:center;gap:4px;margin-left:6px;font-size:.85rem;color:#9a7412}
+.gold i{width:12px;height:12px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#ffe58a,#d9a521 60%,#9a7412);box-shadow:0 0 0 1px #7a5a0c}
+@media (prefers-color-scheme:dark){.gold{color:#f2c94c}}
+#nav button{position:relative}
+#nav button.has-new::after{content:"";position:absolute;top:-5px;right:-5px;width:14px;height:14px;border-radius:50%;background:#f2c94c;border:2px solid var(--accent);animation:glow 1s infinite alternate}
+#nav button.bump{animation:bump .6s ease-out}
+@keyframes bump{20%{transform:scale(1.12) rotate(-3deg)}45%{transform:scale(.96) rotate(2deg)}70%{transform:scale(1.04)}}
+@keyframes glow{to{box-shadow:0 0 0 4px #f2c94c55}}
+.new-tag{font:700 .65rem Georgia,serif;color:#2b1d0e;background:#f2c94c;border-radius:4px;padding:1px 5px;vertical-align:middle}
+.new-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#f2c94c;box-shadow:0 0 0 1px var(--accent);vertical-align:middle}

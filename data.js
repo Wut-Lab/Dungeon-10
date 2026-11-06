@@ -13,7 +13,9 @@ const PLAYER = {
 
 // Enemies. abilities: 'hasty' = Hasty Attack (wins a tie where both drop to 0).
 const ENEMIES = {
-  goblinWarrior: { name: 'Goblin Warrior', icon: '👺', art: 'goblinWarrior', hp: 7, attack: 1, damage: [1, 5], armorBreak: 1, armor: 1, abilities: [] },
+  goblinWarrior: { name: 'Goblin Warrior', icon: '👺', art: 'goblinWarrior', hp: 7, attack: 1, damage: [1, 5], armorBreak: 1, armor: 1, abilities: [],
+    gold: 10,                                        // gold for defeating it
+    drops: [{ id: 'dirtyShoes', chance: 0.10 }] },   // possible loot, each rolled separately
 };
 
 // Random map settings (mapgen.js builds a new map every run). Map cells:
@@ -39,6 +41,7 @@ const CONSUMABLES = {
 // type sorts the Equipment list: weapon, shield, helmet, armor, greaves.
 const EQUIPMENT = {
   shortSword: { name: 'Short Sword', slot: 'hand', type: 'weapon', damage: [2, 4], desc: 'Damage 2–4.' },
+  dirtyShoes: { name: 'Dirty Shoes', slot: 'greaves', type: 'greaves', foeDamageMod: -1, desc: 'Enemies get −1 to damage rolls.' },
   simpleShield: { name: 'Simple Shield', slot: 'hand', type: 'shield', armor: 1, desc: '+1 armor slot.' },
 };
 // What the hero starts each run with.

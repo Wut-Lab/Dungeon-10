@@ -45,6 +45,7 @@ function newRun() {
     cell: findStart(), prev: null, dir: null, steps: 0, moveRoll: null, choosing: null, moving: false,
     visited: new Set(), foes: {}, hero: makeUnit(PLAYER), foe: null, over: false,
     inv: { items: { ...START_KIT.items }, equipped: { ...START_KIT.equipped }, pack: [...START_KIT.pack] },
+    gold: 0, newItems: new Set(),   // newItems: picked up but not looked at yet
     log: ['You enter the dungeon. Roll to move.'],
   });
   state.visited.add(key(state.cell.r, state.cell.c));
@@ -147,14 +148,15 @@ function enterCell() {
 // ---- Combat ----
 // Damage: roll in range, each intact armor slot negates 1 (min 1). Then Armor Break cracks slots.
 function hit(att, def, breakMult = 1) {
-  const raw = rollRange(att.damage);
+  const mod = def === state.hero ? state.hero.foeDamageMod || 0 : 0;   // e.g. Dirty Shoes: enemy −1 damage
+  const raw = Math.max(0, rollRange(att.damage) + mod);
   const dmg = Math.max(1, raw - intact(def));
   def.hpNow -= dmg;
   const brk = Math.min(intact(def), Math.floor(att.armorBreak * breakMult));
   def.broken += brk;
   if (brk) (def === state.hero ? state.armorFx.hero : state.armorFx.foe).lost += brk;
   state.fx.push({ att: att === state.hero ? 'hero' : 'foe', def: def === state.hero ? 'hero' : 'foe' });
-  return `${att.name} hits for ${dmg} (rolled ${raw}, ${Math.max(0, raw - dmg)} blocked by armor)` + (brk ? `, breaking ${brk} armor` : '');
+  return `${att.name} hits for ${dmg} (rolled ${raw}${mod ? ` after ${mod} from your gear` : ''}, ${Math.max(0, raw - dmg)} blocked by armor)` + (brk ? `, breaking ${brk} armor` : '');
 }
 
 function act(action) {
@@ -219,6 +221,8 @@ function act(action) {
   if (f.hpNow <= 0) {
     log.push(`The ${f.name} is defeated! Roll to move on.`);
     noteFoe(f.id, 'defeated');
+    if (f.gold) { state.gold += f.gold; log.push(`You collect ${f.gold} gold.`); }
+    for (const drop of f.drops || []) if (Math.random() < drop.chance) log.push(gainItem(drop.id));
     delete state.foes[key(state.cell.r, state.cell.c)];
     state.foe = null;
   }
@@ -299,6 +303,8 @@ function playFx() {
 
 function render() {
   unitHud(state.hero, $('#hero'));
+  $('#hero .who').insertAdjacentHTML('beforeend', ` <span class="gold" title="Gold"><i></i>${state.gold}</span>`);
+  $('[data-menu=inventory]').classList.toggle('has-new', state.newItems.size > 0);
   const f = state.foe;
   $('#arena').hidden = !f;
   $('#board').hidden = !!f;
@@ -360,16 +366,35 @@ function drawMap() {
 // ---- Inventory ----
 // Equipment groups start closed; remember which ones you opened while the menu re-draws.
 const openGroups = new Set();
-document.addEventListener('toggle', e => { const g = e.target.dataset?.group; if (g) e.target.open ? openGroups.add(g) : openGroups.delete(g); }, true);
+document.addEventListener('toggle', e => {
+  const g = e.target.dataset?.group; if (!g) return;
+  if (e.target.open) {
+    openGroups.add(g);
+    e.target.querySelector('.new-dot')?.remove();
+    for (const id of [...state.newItems]) if (EQUIPMENT[id]?.type === g) state.newItems.delete(id);
+    $('[data-menu=inventory]').classList.toggle('has-new', state.newItems.size > 0);
+  } else openGroups.delete(g);
+}, true);
 const SLOT_NAMES = { rightHand: 'Right hand', leftHand: 'Left hand', helmet: 'Helmet', breastplate: 'Breastplate', greaves: 'Greaves' };
 // The hero's damage comes from the best equipped weapon, or bare fists.
 function applyGear() {
   const weapons = ['rightHand', 'leftHand'].map(s => EQUIPMENT[state.inv.equipped[s]]).filter(w => w?.damage);
   const h = state.hero;
   h.armor = PLAYER.armor + Object.values(state.inv.equipped).reduce((n, id) => n + (EQUIPMENT[id]?.armor || 0), 0);
-  h.broken = Math.min(h.broken, h.armor);   // taking off gear removes its slots, broken ones first
+  h.broken = Math.min(h.broken, h.armor);
+  h.foeDamageMod = Object.values(state.inv.equipped).reduce((n, id) => n + (EQUIPMENT[id]?.foeDamageMod || 0), 0);   // taking off gear removes its slots, broken ones first
   state.hero.damage = weapons.length ? weapons.reduce((a, b) => (b.damage[1] > a.damage[1] ? b : a)).damage : PLAYER.damage;
 }
+// Loot goes to Items (consumables) or the Pack (equipment) and is flagged as new until you look at it.
+function gainItem(id) {
+  if (CONSUMABLES[id]) state.inv.items[id] = (state.inv.items[id] || 0) + 1;
+  else state.inv.pack.push(id);
+  state.newItems.add(id);
+  const btn = $('[data-menu=inventory]');
+  btn.classList.remove('bump'); void btn.offsetWidth; btn.classList.add('bump');
+  return `You found ${(CONSUMABLES[id] || EQUIPMENT[id]).name}! (new in Inventory)`;
+}
+const newBadge = id => state.newItems.has(id) ? '<span class="new-tag">New</span>' : '';
 function useItem(id) {
   const it = CONSUMABLES[id], h = state.hero;
   if (!it || !state.inv.items[id]) return null;
@@ -386,11 +411,16 @@ function equipBox(slot) {
 }
 function inventoryMenu() {
   const tab = $('#menu').dataset.tab || 'items';
-  const tabs = `<div class="tabs">${['items', 'equipment'].map(t => `<button data-tab="${t}" aria-pressed="${t === tab}">${t === 'items' ? 'Items' : 'Equipment'}</button>`).join('')}</div>`;
+  // Things you've now looked at stop being "new" after this view (equipment counts once its group is open).
+  queueMicrotask(() => {
+    for (const id of [...state.newItems]) if (tab === 'items' ? CONSUMABLES[id] : EQUIPMENT[id] && openGroups.has(EQUIPMENT[id].type)) state.newItems.delete(id);
+    $('[data-menu=inventory]').classList.toggle('has-new', state.newItems.size > 0);
+  });
+  const tabs = `<div class="tabs">${['items', 'equipment'].map(t => `<button data-tab="${t}" aria-pressed="${t === tab}">${t === 'items' ? 'Items' : 'Equipment'}${[...state.newItems].some(id => t === 'items' ? CONSUMABLES[id] : EQUIPMENT[id]) ? ' <span class="new-dot"></span>' : ''}</button>`).join('')}</div>`;
   if (tab === 'items') {
     const ids = Object.keys(state.inv.items).filter(id => state.inv.items[id] > 0);
     return `<h3>Inventory</h3>${tabs}<p class="sub">Consumables</p>` + (ids.length ? ids.map(id => `<div class="foe-row item-row">
-      <span class="row-art">${ICONS[id] || ''}</span><span class="grow">${CONSUMABLES[id].name} <b>×${state.inv.items[id]}</b><small>${CONSUMABLES[id].desc}</small></span>
+      <span class="row-art">${ICONS[id] || ''}</span><span class="grow">${CONSUMABLES[id].name} <b>×${state.inv.items[id]}</b> ${newBadge(id)}<small>${CONSUMABLES[id].desc}</small></span>
       <button class="use" data-use="${id}" ${state.foe ? 'disabled title="In a fight, use 4 · Use item"' : ''}>Use</button></div>`).join('')
       : '<p class="none">No consumables.</p>');
   }
@@ -400,8 +430,8 @@ function inventoryMenu() {
   const GROUPS = [['weapon', 'Weapons'], ['shield', 'Shields'], ['helmet', 'Helmet'], ['armor', 'Armor'], ['greaves', 'Greaves']];
   const pack = GROUPS.map(([type, label]) => {
     const list = owned.filter(o => EQUIPMENT[o.id].type === type).sort((a, b) => EQUIPMENT[a.id].name.localeCompare(EQUIPMENT[b.id].name));
-    return `<details class="group-box" data-group="${type}" ${openGroups.has(type) ? 'open' : ''}><summary class="group">${label} <span class="count">${list.length}</span></summary>` + (list.length ? list.map(o => `<button class="foe-row" ${o.slot ? `data-slot="${o.slot}"` : `data-pack="${o.i}"`}>
-      <span class="row-art">${ICONS[o.id] || ''}</span><span class="grow">${EQUIPMENT[o.id].name}<small>${EQUIPMENT[o.id].desc} ${o.slot ? 'Tap to unequip.' : 'Tap to equip.'}</small></span>
+    return `<details class="group-box" data-group="${type}" ${openGroups.has(type) ? 'open' : ''}><summary class="group">${label} ${list.some(o => state.newItems.has(o.id)) ? '<span class="new-dot"></span>' : ''}<span class="count">${list.length}</span></summary>` + (list.length ? list.map(o => `<button class="foe-row" ${o.slot ? `data-slot="${o.slot}"` : `data-pack="${o.i}"`}>
+      <span class="row-art">${ICONS[o.id] || ''}</span><span class="grow">${EQUIPMENT[o.id].name} ${newBadge(o.id)}<small>${EQUIPMENT[o.id].desc} ${o.slot ? 'Tap to unequip.' : 'Tap to equip.'}</small></span>
       ${o.slot ? `<span class="tag-eq">Equipped</span>` : ''}</button>`).join('') : '<p class="none">None</p>') + '</details>';
   }).join('');
   const wpn = ['rightHand', 'leftHand'].map(s => e[s] && EQUIPMENT[e[s]]).filter(Boolean);
