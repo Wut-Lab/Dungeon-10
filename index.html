@@ -16,7 +16,17 @@
   </section>
 
   <section id="play" class="screen" hidden>
-    <div id="hero" class="unit">
+    <h2 id="dungeon-name"></h2>
+    <nav id="nav">
+      <button data-menu="inventory" aria-pressed="false">Inventory</button>
+      <button data-menu="log" aria-pressed="false">Log</button>
+      <button data-menu="options" aria-pressed="false">Options</button>
+    </nav>
+    <div id="menu" class="menu" hidden>
+      <button id="menu-close" aria-label="Close menu">✕</button>
+      <div id="menu-body"></div>
+    </div>
+    <div id="hero" class="unit thin">
       <div class="who"></div><div class="bar"><i class="fill"></i><span class="hpt"></span></div>
       <div class="slots" aria-label="Armor slots"></div><div class="stats"></div>
     </div>

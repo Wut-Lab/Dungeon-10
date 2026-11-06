@@ -75,7 +75,7 @@ h1{font-size:clamp(2.2rem,9vw,3.4rem);color:var(--accent);margin:24px 0 0;letter
 .plates .unit{padding:8px 10px;gap:4px}.plates .who{font-size:.92rem}
 .plates .bar{height:18px}.plates .bar span{font-size:.75rem}
 .plates .slot{width:14px;height:16px}.plates .stats{font-size:.75rem}
-.plates #foe{text-align:right}.plates #foe .slots{justify-content:flex-end}
+
 .plates .bar span{display:block;padding:0 8px}
 .chg{font:700 .75rem Georgia,serif;padding:0 5px;border-radius:4px;align-self:center;animation:pop .5s ease-out}
 .chg.lost{background:var(--accent);color:#fff}.chg.gained{background:var(--accent2);color:#fff}
@@ -85,3 +85,28 @@ h1{font-size:clamp(2.2rem,9vw,3.4rem);color:var(--accent);margin:24px 0 0;letter
 .wpn{transform-box:view-box}
 .wpn.sword{transform-origin:68px 68px}.wpn.axe{transform-origin:31px 99px}
 .slot{transform-origin:50% 60%}
+
+/* ---- Play screen header: dungeon name, menu buttons, thin hero card ---- */
+#dungeon-name{margin:0;font-size:clamp(1.4rem,6vw,2rem);color:var(--accent);letter-spacing:.05em}
+#nav{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:100%}
+#nav button{font:700 .95rem Georgia,serif;min-height:42px;border-radius:8px;border:2px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;transition:transform .12s,border-color .12s}
+#nav button:hover{border-color:var(--accent2)}#nav button:active{transform:translateY(1px)}
+#nav button[aria-pressed=true]{border-color:var(--accent);background:var(--accent);color:#fff}
+.menu{position:relative;width:100%;background:var(--card);border:2px solid var(--accent);border-radius:10px;padding:12px 14px;text-align:left;animation:menuIn .22s ease-out}
+@keyframes menuIn{from{opacity:0;transform:translateY(-8px)}}
+.menu[hidden]{display:none}
+.menu h3{margin:0 0 6px;color:var(--accent)}.menu .sub{margin:0 0 8px;color:var(--mute);font-size:.85rem}
+#menu-close{position:absolute;top:6px;right:8px;border:0;background:none;color:var(--mute);font-size:1.1rem;cursor:pointer;min-width:32px;min-height:32px}
+.entry{display:grid;grid-template-columns:64px 1fr;gap:12px;align-items:center;border-top:1px dashed var(--line);padding:8px 0}
+.entry-art{height:72px;display:flex;justify-content:center}.entry-art svg{height:100%;width:auto}
+.entry h4{margin:0}
+.entry dl{display:grid;grid-template-columns:repeat(5,auto);gap:0 10px;margin:2px 0;font-size:.8rem;justify-content:start}
+.entry dt{color:var(--mute);grid-row:1}.entry dd{margin:0;font-weight:700;grid-row:2}
+.abil,.tally{margin:2px 0 0;font-size:.8rem}.tally{color:var(--mute)}
+.opt-list{display:grid;gap:8px}
+.opt-list button{font:700 .95rem Georgia,serif;min-height:42px;border-radius:8px;border:2px solid var(--accent2);background:var(--bg);color:var(--fg);cursor:pointer}
+.unit.thin{grid-template-columns:auto 1fr;grid-template-areas:"who bar" "slots stats";gap:4px 10px;padding:6px 10px;align-items:center}
+.thin .who{grid-area:who;font-size:.92rem}.thin .bar{grid-area:bar;height:16px}.thin .bar span{font-size:.72rem;display:block}
+.thin .slots{grid-area:slots;min-height:14px}.thin .slot{width:13px;height:15px}
+.thin .stats{grid-area:stats;font-size:.75rem;text-align:right}
+.plates{grid-template-columns:1fr}

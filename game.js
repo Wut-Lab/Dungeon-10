@@ -5,7 +5,16 @@ const rollRange = ([lo, hi]) => lo + Math.floor(Math.random() * (hi - lo + 1));
 
 let state;
 
-const makeUnit = base => ({ ...base, hpNow: base.hp, broken: 0 });
+const makeUnit = (base, id) => ({ ...base, id, hpNow: base.hp, broken: 0 });
+
+// ---- Bestiary (the Log menu): enemies you've met, kept between runs on this device ----
+let bestiary = {};
+try { bestiary = JSON.parse(localStorage.getItem('d10-bestiary')) || {}; } catch {}
+function noteFoe(id, field) {
+  const b = bestiary[id] ||= { met: 0, defeated: 0, felledYou: 0 };
+  b[field]++;
+  try { localStorage.setItem('d10-bestiary', JSON.stringify(bestiary)); } catch {}
+}
 const intact = u => u.armor - u.broken;
 
 // ---- Map ----
@@ -38,6 +47,9 @@ function newRun() {
     log: ['You enter the dungeon. Roll to move.'],
   });
   state.visited.add(key(state.cell.r, state.cell.c));
+  state.map.forEach((row, r) => { const c = row.indexOf('E'); if (c >= 0) state.exitKey = key(r, c); });
+  $('#dungeon-name').textContent = DUNGEON_NAME;
+  closeMenu();
   show('play');
   render();
 }
@@ -104,11 +116,12 @@ function enterCell() {
   if (ch === 'E') { state.steps = 0; state.log.push('You find the stairs out of the dungeon!'); return end(true); }
   if ('RVH'.includes(ch) && first && Math.random() < ROOM_ENEMY_CHANCE) {
     const id = ROOM_ENEMIES[Math.floor(Math.random() * ROOM_ENEMIES.length)];
-    state.foes[k] = makeUnit(ENEMIES[id]);
+    state.foes[k] = makeUnit(ENEMIES[id], id);
   }
   if (state.foes[k]) {
     state.steps = 0;                                  // an enemy stops you mid-move
     state.foe = state.foes[k];
+    noteFoe(state.foe.id, 'met');
     state.lastRoll = null; state.fx = []; state.armorFx = null;
     state.log = [`A ${state.foe.name} blocks the way!`];
   }
@@ -179,9 +192,10 @@ function act(action) {
   const af = state.armorFx.hero;
   if (af.lost || af.gained) log.push(`Your armor: ${startIntact}/${h.armor}` + (af.lost ? ` → ${af.lost} broken` : '') + (af.gained ? ` → ${af.gained} repaired` : '') + ` → ${intact(h)}/${h.armor}`);
   state.log = log;
-  if (h.hpNow <= 0) return end(false);
+  if (h.hpNow <= 0) { noteFoe(f.id, 'felledYou'); return end(false); }
   if (f.hpNow <= 0) {
     log.push(`The ${f.name} is defeated! Roll to move on.`);
+    noteFoe(f.id, 'defeated');
     delete state.foes[key(state.cell.r, state.cell.c)];
     state.foe = null;
   }
@@ -190,6 +204,7 @@ function act(action) {
 
 function end(won) {
   state.over = true;
+  closeMenu();
   render();
   $('#end-title').textContent = won ? 'Victory!' : 'You have fallen…';
   $('#end-text').textContent = won
@@ -264,8 +279,6 @@ function render() {
   const f = state.foe;
   $('#arena').hidden = !f;
   $('#board').hidden = !!f;
-  // In a fight the hero's panel sits beside the enemy's; otherwise above the board.
-  if (f) $('.plates').prepend($('#hero')); else $('#board').before($('#hero'));
   if (f) {
     unitHud(f, $('#foe'));
     $('#fig-hero').innerHTML = ART.hero;
@@ -296,6 +309,7 @@ function drawMap() {
   for (const d of state.choosing || []) choiceAt[key(state.cell.r + DIRS[d][0], state.cell.c + DIRS[d][1])] = d;
   // Fog of war: you see every cell you've visited, plus one cell ahead through each of their exits.
   const seen = new Set(state.visited);
+  seen.add(state.exitKey);   // the exit is always shown, so you know where you're headed
   for (const k of state.visited) {
     const [r, c] = k.split(',').map(Number);
     for (const d of exits(r, c)) seen.add(key(r + DIRS[d][0], c + DIRS[d][1]));
@@ -317,6 +331,48 @@ function drawMap() {
   }));
 }
 
+// ---- Menus: Inventory, Log, Options ----
+const MENUS = {
+  inventory: () => `<h3>Inventory</h3><p class="none">Your pack is empty. Weapons and items are coming soon.</p>`,
+  log: () => {
+    const ids = Object.keys(ENEMIES).filter(id => bestiary[id]);
+    if (!ids.length) return `<h3>Log</h3><p class="none">No enemies encountered yet. Creatures you meet are recorded here.</p>`;
+    return `<h3>Log</h3><p class="sub">Enemies encountered · ${ids.length} of ${Object.keys(ENEMIES).length}</p>` + ids.map(id => {
+      const e = ENEMIES[id], b = bestiary[id];
+      return `<article class="entry"><div class="entry-art">${ART[e.art] || ''}</div><div>
+        <h4>${e.name}</h4>
+        <dl><dt>HP</dt><dd>${e.hp}</dd><dt>Attack</dt><dd>+${e.attack}</dd><dt>Damage</dt><dd>${e.damage[0]}–${e.damage[1]}</dd>
+        <dt>Armor</dt><dd>${e.armor}</dd><dt>Break</dt><dd>${e.armorBreak}</dd></dl>
+        ${e.abilities.length ? `<p class="abil">${e.abilities.map(a => a === 'hasty' ? 'Hasty Attack: wins a double knockout' : a).join(' · ')}</p>` : ''}
+        <p class="tally">Met ${b.met} · Defeated ${b.defeated}${b.felledYou ? ` · Felled you ${b.felledYou}` : ''}</p>
+      </div></article>`;
+    }).join('');
+  },
+  options: () => `<h3>Options</h3><div class="opt-list">
+    <button data-opt="restart">Restart run</button>
+    <button data-opt="title">Return to title</button>
+    <button data-opt="clear-log">Clear enemy log</button></div>`,
+};
+function openMenu(name) {
+  if ($('#menu').dataset.open === name) return closeMenu();
+  $('#menu').dataset.open = name;
+  $('#menu-body').innerHTML = MENUS[name]();
+  $('#menu').hidden = false;
+  document.querySelectorAll('#nav button').forEach(b => b.setAttribute('aria-pressed', b.dataset.menu === name));
+}
+function closeMenu() {
+  $('#menu').hidden = true; delete $('#menu').dataset.open;
+  document.querySelectorAll('#nav button').forEach(b => b.setAttribute('aria-pressed', 'false'));
+}
+document.querySelectorAll('#nav button').forEach(b => b.onclick = () => openMenu(b.dataset.menu));
+$('#menu-close').onclick = closeMenu;
+$('#menu-body').onclick = e => {
+  const opt = e.target.closest('[data-opt]')?.dataset.opt;
+  if (opt === 'restart') newRun();
+  if (opt === 'title') { closeMenu(); show('title'); }
+  if (opt === 'clear-log') { bestiary = {}; try { localStorage.removeItem('d10-bestiary'); } catch {} openMenu('log'); }
+};
+
 // ---- Input ----
 $('#start').onclick = newRun;
 $('#again').onclick = newRun;
@@ -325,6 +381,8 @@ document.querySelectorAll('#actions button').forEach(btn => btn.onclick = () => 
 addEventListener('keydown', e => {
   if (!$('#title').hidden && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); return newRun(); }
   if ($('#play').hidden) return;
+  if (e.key === 'Escape' && !$('#menu').hidden) return closeMenu();
+  if (!$('#menu').hidden) return;
   const arrow = { ArrowUp: 'up', ArrowDown: 'down', ArrowLeft: 'left', ArrowRight: 'right' }[e.key];
   if (arrow && state.choosing) { e.preventDefault(); return choose(arrow); }
   if ((e.key === ' ' || e.key === 'Enter') && !state.foe && !$('#move').hidden && document.activeElement?.tagName !== 'BUTTON') { e.preventDefault(); return rollMove(); }

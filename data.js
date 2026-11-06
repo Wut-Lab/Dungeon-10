@@ -1,4 +1,6 @@
 // Dungeon 10 game data. Tweak numbers here; game.js reads them.
+const DUNGEON_NAME = 'The Hollow Crypt';   // placeholder name shown at the top of the play screen
+
 const PLAYER = {
   name: 'Hero',
   hp: 20,            // max HP
