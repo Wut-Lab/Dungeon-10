@@ -41,9 +41,9 @@ const ART = {
   <path d="M42 148 h16 v8 h-19 Z M66 148 h14 l3 8 h-17 Z" fill="#3a2a18"/>
   <path d="M76 74 L92 103 L86 107 L70 82 Z" fill="#6f8f3a"/>
   <path d="M50 74 L26 94 L31 103 L54 84 Z" fill="#6f8f3a"/>
-  <path d="M44 74 Q62 66 80 74 L84 124 L40 124 Z" fill="#6b4a2a"/>
-  <path d="M47 82 H77 L79 92 H45 Z M46 100 H78 L80 110 H44 Z" fill="#8a6a3a"/>
-  <rect x="42" y="115" width="40" height="7" fill="#3a2a18"/>
+  <path d="M47 74 Q62 67 77 74 L80 124 L44 124 Z" fill="#6b4a2a"/>
+  <path d="M50 82 H74 L75 92 H49 Z M49 100 H75 L77 110 H47 Z" fill="#8a6a3a"/>
+  <rect x="45" y="115" width="35" height="7" fill="#3a2a18"/>
   <circle cx="89" cy="106" r="5" fill="#7fa043"/>
   <path d="M18 34 L23 33 L39 132 L34 133 Z" fill="#6b4a2a"/>
   <path d="M21 38 L8 33 Q1 48 9 63 L24 56 Z" fill="#9aa5a8"/>
@@ -51,11 +51,11 @@ const ART = {
   <circle cx="31" cy="99" r="6" fill="#7fa043"/>
   <path d="M36 78 Q44 67 55 73 L53 83 Q45 79 39 85 Z" fill="#5a3b1e"/>
   <circle cx="46" cy="76" r="1.6" fill="#9aa5a8"/><circle cx="41" cy="80" r="1.6" fill="#9aa5a8"/>
-  <path d="M78 73 Q84 72 87 78 L82 82 Q80 78 76 78 Z" fill="#6f8f3a"/>
   <path d="M44 51 L12 40 L44 63 Z" fill="#6f8f3a"/>
   <path d="M80 51 L112 40 L80 63 Z" fill="#6f8f3a"/>
   <ellipse cx="62" cy="57" rx="20" ry="17" fill="#7fa043"/>
-  <path d="M42 53 Q62 30 82 53 Q72 44 62 44 Q52 44 42 53 Z" fill="#5a3b1e"/>
+  <path d="M43 51 Q44 37 62 37 Q80 37 81 51 Q62 44 43 51 Z" fill="#5a3b1e"/>
+  <path d="M62 37.5 V45 M52 39.5 Q54 44 53 47 M72 39.5 Q70 44 71 47" fill="none" stroke="#3a2a18" stroke-width="1.2"/>
   <ellipse cx="54" cy="56" rx="5" ry="3.5" fill="#f2d14a"/>
   <ellipse cx="70" cy="56" rx="5" ry="3.5" fill="#f2d14a"/>
   <circle cx="53" cy="56" r="2" fill="#8b1a10"/>
