@@ -44,7 +44,12 @@
       <button data-act="flee" data-key="5">5 · Flee</button>
     </div>
     <pre id="log" aria-live="polite"></pre>
-    <p class="hint">Tap the next tile or press → to step forward.</p>
+    <div id="move">
+      <div class="die move-die"><b id="move-die">–</b><small>d10</small></div>
+      <button id="roll-move" class="big">Roll to move</button>
+      <span id="steps"></span>
+    </div>
+    <p class="hint">Roll 1 + d10 to move. In a room, tap a glowing doorway or use the arrow keys to choose a way.</p>
   </section>
 
   <section id="end" class="screen" hidden>

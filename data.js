@@ -14,8 +14,19 @@ const ENEMIES = {
   goblinWarrior: { name: 'Goblin Warrior', icon: '👺', art: 'goblinWarrior', hp: 7, attack: 1, damage: [1, 5], armorBreak: 1, armor: 1, abilities: [] },
 };
 
-// The test map: two tiles.
-const TILES = [
-  { name: 'Entrance', kind: 'start' },
-  { name: 'Dark Hall', kind: 'fight', enemy: 'goblinWarrior' },
+// The dungeon map. One character per cell:
+//   S start room   E exit room   R room (doors on every wall)
+//   | vertical hallway   - horizontal hallway   . solid rock
+// Rooms join through the hallways next to them.
+const MAP = [
+  'R-R-R-R-E',
+  '|...|...|',
+  'R-R-R.R-R',
+  '..|...|..',
+  'R-R-R-R.R',
+  '|.....|.|',
+  'S-R-R.R-R',
 ];
+
+const ROOM_ENEMY_CHANCE = 0.25;           // chance a room holds an enemy, rolled when you first enter it
+const ROOM_ENEMIES = ['goblinWarrior'];   // which enemies can appear in rooms

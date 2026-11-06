@@ -10,14 +10,17 @@ A simple dice-rolling dungeon crawler built around the ten-sided die (d10).
 The title screen has the same download link.
 
 ## Controls
-- Tap the next tile, or press **→**, to move.
+- **Roll to move** (button, Space or Enter): you move 1 + d10 spaces.
+- Hallways carry you straight on. In a room with more than one way on, tap a glowing doorway or use the **arrow keys**.
+- Rooms have a 25% chance of holding an enemy. Meeting one stops your move and starts a fight.
+- Reach the **exit stairs** to win.
 - In a fight, tap an action or press **1** Attack, **2** Defend, **3** Repair, **4** Use item (coming soon), **5** Flee.
 
 ## Files
 | File | What's in it |
 |---|---|
 | `index.html` | The page |
-| `data.js` | Game numbers: player stats, enemies, tiles (edit these to tune the game) |
+| `data.js` | Game numbers: player stats, enemies, the dungeon map and encounter chance (edit these to tune the game) |
 | `game.js` | Game logic |
-| `art.js` | Paper-cutout character art (SVG) |
+| `art.js` | Paper-cutout art (SVG): characters and map tiles |
 | `style.css` | Look and feel, combat screen |

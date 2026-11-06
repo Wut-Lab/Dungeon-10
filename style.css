@@ -28,10 +28,22 @@ h1{font-size:clamp(2.2rem,9vw,3.4rem);color:var(--accent);margin:24px 0 0;letter
 #actions button:disabled{opacity:.45;cursor:not-allowed}
 #log,#end-log{width:100%;white-space:pre-wrap;font:.9rem/1.5 Georgia,serif;text-align:left;margin:0;color:var(--fg);background:var(--card);border:1px dashed var(--line);border-radius:8px;padding:10px;min-height:3em}
 #log:empty{display:none}
-#board{display:flex;gap:12px;width:100%}
-.tile{flex:1;aspect-ratio:1;border:3px solid var(--line);border-radius:10px;background:var(--card);color:var(--fg);font:inherit;display:grid;place-items:center;align-content:center;gap:8px;cursor:default}
-.tile.here{border-color:var(--accent)}.tile.next{border-style:dashed;border-color:var(--accent2);cursor:pointer}
-.tname{font-weight:700}.token{font-size:2.4rem}
+#board{display:grid;grid-template-columns:repeat(var(--cols),1fr);width:100%;background:#3d3020;border:3px solid var(--line);border-radius:10px;padding:4px;gap:0}
+.cell{position:relative;aspect-ratio:1;padding:0;border:0;background:none;font:inherit;color:inherit}
+.cell.rock{background:#3d3020}
+.cell .tile-art{position:absolute;inset:0;width:100%;height:100%;filter:drop-shadow(1px 1.5px 0 rgba(0,0,0,.35))}
+.tile-art .d{filter:drop-shadow(.3px .5px 0 rgba(0,0,0,.3))}
+.cell.fog .tile-art{filter:brightness(.72) saturate(.7)}
+.cell.pick{cursor:pointer;outline:3px solid #f2d14a;outline-offset:-3px;border-radius:4px;animation:pick 1s infinite alternate;z-index:2}
+@keyframes pick{to{outline-color:#f2d14a66}}
+.arrow{position:absolute;inset:0;display:grid;place-items:center;color:#f2d14a;font-size:clamp(.7rem,4vw,1.4rem);text-shadow:0 1px 2px #000}
+.mini{position:absolute;inset:4% 14% 2%;display:flex;justify-content:center;pointer-events:none;z-index:1}
+.mini svg{height:100%;width:auto;filter:drop-shadow(1px 1.5px 0 rgba(0,0,0,.4))}
+.foe-mini{inset:10% 4% 2% 30%}.hero-mini~.foe-mini,.foe-mini~.hero-mini{}
+#move{display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:center}#move[hidden]{display:none}
+.move-die{transform:none;width:52px;height:52px}
+#roll-move:disabled{opacity:.5;cursor:default}
+#steps{color:var(--mute);font-weight:700;min-width:7em}
 .hint{color:var(--mute);font-size:.9rem}
 
 /* ---- Combat screen: paper-cutout face-off ---- */
@@ -57,7 +69,7 @@ h1{font-size:clamp(2.2rem,9vw,3.4rem);color:var(--accent);margin:24px 0 0;letter
 .die small{font-size:.65rem}
 .die.roll{animation:tumble .4s ease-out}
 @keyframes tumble{from{transform:rotate(-200deg) scale(.6)}}
-@media (prefers-reduced-motion:reduce){.fig,.die,.torch::before,.fig::after{animation:none!important}}
+@media (prefers-reduced-motion:reduce){.fig,.die,.torch::before,.fig::after,.cell.pick{animation:none!important}}
 @media (min-width:520px){.stage{height:280px}.fig{height:230px}}
 .plates{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .plates .unit{padding:8px 10px;gap:4px}.plates .who{font-size:.92rem}

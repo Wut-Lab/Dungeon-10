@@ -79,3 +79,29 @@ const ART = {
   <path class="d" d="M56 68.2 l2 4 l2 -3.4 Z M64 68.8 l2 3.4 l2 -4 Z" fill="#f3e9d2"/>
   </svg>`,
 };
+
+// Map tiles, drawn in the same paper style. viewBox 0 0 100 100.
+// Doors and hallways meet at the middle of each edge (x/y 34..66).
+const FLOOR = '#8c7556', WALL = '#4a3a28', DOOR = '#6b4a2a';
+const roomBase = extra => `<svg viewBox="0 0 100 100" class="tile-art">
+  <rect x="8" y="8" width="84" height="84" fill="${FLOOR}"/>
+  <path class="d" d="M8 36 H92 M8 64 H92 M36 8 V36 M64 36 V64 M30 64 V92 M70 64 V92 M58 8 V36" stroke="#7a6447" stroke-width="1.5"/>
+  <rect x="8" y="8" width="84" height="84" fill="none" stroke="${WALL}" stroke-width="8"/>
+  <rect class="d" x="35" y="2" width="30" height="12" rx="2" fill="${DOOR}"/>
+  <rect class="d" x="35" y="86" width="30" height="12" rx="2" fill="${DOOR}"/>
+  <rect class="d" x="2" y="35" width="12" height="30" rx="2" fill="${DOOR}"/>
+  <rect class="d" x="86" y="35" width="12" height="30" rx="2" fill="${DOOR}"/>
+  ${extra}</svg>`;
+const TILE_ART = {
+  R: roomBase(''),
+  S: roomBase(`<path class="d" d="M38 30 H62 V70 L50 62 L38 70 Z" fill="#8b2e16"/><path class="d" d="M42 36 H58 M42 42 H58" stroke="#d9b44a" stroke-width="2"/>`),
+  E: roomBase(`<rect class="d" x="28" y="28" width="44" height="44" fill="#2b1d0e"/>
+    <rect class="d" x="28" y="28" width="44" height="9" fill="#a89070"/><rect class="d" x="28" y="37" width="44" height="9" fill="#8c7556"/>
+    <rect class="d" x="28" y="46" width="44" height="9" fill="#6f5c42"/><rect class="d" x="28" y="55" width="44" height="9" fill="#54452f"/>`),
+  '|': `<svg viewBox="0 0 100 100" class="tile-art"><rect x="32" y="0" width="36" height="100" fill="${FLOOR}"/>
+    <path class="d" d="M32 30 H68 M32 70 H68 M50 0 V30 M44 30 V70 M56 70 V100" stroke="#7a6447" stroke-width="1.5"/>
+    <path d="M32 0 V100 M68 0 V100" stroke="${WALL}" stroke-width="6"/></svg>`,
+  '-': `<svg viewBox="0 0 100 100" class="tile-art"><rect x="0" y="32" width="100" height="36" fill="${FLOOR}"/>
+    <path class="d" d="M30 32 V68 M70 32 V68 M0 50 H30 M30 44 H70 M70 56 H100" stroke="#7a6447" stroke-width="1.5"/>
+    <path d="M0 32 H100 M0 68 H100" stroke="${WALL}" stroke-width="6"/></svg>`,
+};

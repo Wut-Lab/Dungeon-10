@@ -8,8 +8,34 @@ let state;
 const makeUnit = base => ({ ...base, hpNow: base.hp, broken: 0 });
 const intact = u => u.armor - u.broken;
 
+// ---- Map ----
+const DIRS = { up: [-1, 0], down: [1, 0], left: [0, -1], right: [0, 1] };
+const BACK = { up: 'down', down: 'up', left: 'right', right: 'left' };
+const at = (r, c) => MAP[r]?.[c] ?? '.';
+const key = (r, c) => r + ',' + c;
+const isRoom = ch => 'RSE'.includes(ch);
+const ROOM_NAME = { S: 'Entrance', E: 'Exit Stairs', R: 'Room', '|': 'Hallway', '-': 'Hallway' };
+
+// Ways out of a cell: rooms open into any hallway that runs toward them; hallways only run straight.
+function exits(r, c) {
+  const here = at(r, c), out = [];
+  for (const [d, [dr, dc]] of Object.entries(DIRS)) {
+    const there = at(r + dr, c + dc), vertical = d === 'up' || d === 'down';
+    if (here === '|' && !vertical || here === '-' && vertical) continue;
+    if (there === '|' && vertical || there === '-' && !vertical || isRoom(there) && !isRoom(here)) out.push(d);
+  }
+  return out;
+}
+
+function findStart() { for (let r = 0; r < MAP.length; r++) { const c = MAP[r].indexOf('S'); if (c >= 0) return { r, c }; } }
+
 function newRun() {
-  state = { pos: 0, hero: makeUnit(PLAYER), foe: null, cleared: new Set(), over: false, log: [] };
+  state = {
+    cell: findStart(), prev: null, dir: null, steps: 0, moveRoll: null, choosing: null, moving: false,
+    visited: new Set(), foes: {}, hero: makeUnit(PLAYER), foe: null, over: false,
+    log: ['You enter the dungeon. Roll to move.'],
+  };
+  state.visited.add(key(state.cell.r, state.cell.c));
   show('play');
   render();
 }
@@ -17,16 +43,73 @@ function newRun() {
 function show(id) { for (const s of document.querySelectorAll('.screen')) s.hidden = s.id !== id; }
 
 // ---- Movement ----
-function step() {
-  if (state.foe || state.over || state.pos >= TILES.length - 1) return;
-  state.pos++;
-  const t = TILES[state.pos];
-  if (t.kind === 'fight' && !state.cleared.has(state.pos)) {
-    state.foe = makeUnit(ENEMIES[t.enemy]);
+// Roll 1 + d10 steps. Hallways carry you straight on; in a room with more than one way on, you choose.
+const wait = ms => new Promise(res => setTimeout(res, calm.matches ? 0 : ms));
+
+async function rollMove() {
+  if (state.foe || state.over || state.moving || state.steps) return;
+  const die = d10();
+  state.moveRoll = die;
+  state.steps = 1 + die;
+  state.log = [`You roll ${die} + 1: move ${state.steps} spaces.`];
+  render();
+  await keepMoving();
+}
+
+async function keepMoving() {
+  state.moving = true;
+  while (state.steps > 0 && !state.foe && !state.over) {
+    const { r, c } = state.cell;
+    let options = exits(r, c);
+    if (isRoom(at(r, c))) {
+      const onward = options.filter(d => d !== BACK[state.dir]);
+      if (onward.length) options = onward;          // only turn back from a dead end
+      if (options.length > 1) { state.choosing = options; state.moving = false; render(); return; }
+    } else {
+      options = [state.dir];                         // hallways run straight
+    }
+    await moveTo(options[0]);
+  }
+  state.moving = false;
+  state.choosing = null;
+  if (!state.foe && !state.over) state.log.push('Roll again to keep exploring.');
+  render();
+}
+
+async function choose(d) {
+  if (!state.choosing?.includes(d)) return;
+  state.choosing = null;
+  state.moving = true;
+  await moveTo(d);
+  await keepMoving();
+}
+
+async function moveTo(d) {
+  const [dr, dc] = DIRS[d];
+  state.prev = { ...state.cell };
+  state.cell = { r: state.cell.r + dr, c: state.cell.c + dc };
+  state.dir = d;
+  state.steps--;
+  enterCell();
+  render();
+  await wait(220);
+}
+
+function enterCell() {
+  const { r, c } = state.cell, k = key(r, c), ch = at(r, c);
+  const first = !state.visited.has(k);
+  state.visited.add(k);
+  if (ch === 'E') { state.steps = 0; state.log.push('You find the stairs out of the dungeon!'); return end(true); }
+  if (ch === 'R' && first && Math.random() < ROOM_ENEMY_CHANCE) {
+    const id = ROOM_ENEMIES[Math.floor(Math.random() * ROOM_ENEMIES.length)];
+    state.foes[k] = makeUnit(ENEMIES[id]);
+  }
+  if (state.foes[k]) {
+    state.steps = 0;                                  // an enemy stops you mid-move
+    state.foe = state.foes[k];
     state.lastRoll = null; state.fx = []; state.armorFx = null;
     state.log = [`A ${state.foe.name} blocks the way!`];
   }
-  render();
 }
 
 // ---- Combat ----
@@ -58,7 +141,11 @@ function act(action) {
   log.push(`You roll ${hd}${hTotal !== hd ? ` +${hTotal - hd} = ${hTotal}` : ''} vs ${f.name} ${fd} +${f.attack} = ${fTotal}`);
 
   if (action === 'flee') {
-    if (hTotal > fTotal) { log.push('You escape back the way you came!'); state.foe = null; state.pos--; state.log = log; return render(); }
+    if (hTotal > fTotal) {
+      log.push('You escape back the way you came!');
+      state.foe = null; state.cell = state.prev; state.dir = BACK[state.dir];
+      state.log = log; return render();
+    }
     log.push('You fail to escape!');
     log.push(hit(f, h));
   } else if (action === 'attack') {
@@ -92,10 +179,9 @@ function act(action) {
   state.log = log;
   if (h.hpNow <= 0) return end(false);
   if (f.hpNow <= 0) {
-    log.push(`The ${f.name} is defeated!`);
-    state.cleared.add(state.pos);
+    log.push(`The ${f.name} is defeated! Roll to move on.`);
+    delete state.foes[key(state.cell.r, state.cell.c)];
     state.foe = null;
-    if (state.pos === TILES.length - 1) return end(true);
   }
   render();
 }
@@ -105,7 +191,7 @@ function end(won) {
   render();
   $('#end-title').textContent = won ? 'Victory!' : 'You have fallen…';
   $('#end-text').textContent = won
-    ? `You cleared the dungeon with ${state.hero.hpNow} HP and ${intact(state.hero)}/${state.hero.armor} armor left.`
+    ? `You escaped the dungeon with ${state.hero.hpNow} HP and ${intact(state.hero)}/${state.hero.armor} armor left.`
     : 'The dungeon claims another adventurer.';
   $('#end-log').textContent = state.log.join('\n');
   show('end');
@@ -191,32 +277,48 @@ function render() {
   $('#fd-sub').textContent = r ? `rolled ${r.fd}` : 'Enemy';
   $('#actions').hidden = !f;
   $('#log').textContent = state.log.join('\n');
-  $('.hint').hidden = !!f;
 
+  drawMap();
+  const moving = !f && !state.over;
+  $('#move').hidden = !moving;
+  $('#roll-move').disabled = !!(state.steps || state.moving);
+  $('#move-die').textContent = state.moveRoll ?? '–';
+  $('#steps').textContent = state.choosing ? `${state.steps} left · choose a way` : state.steps ? `${state.steps} left` : 'Ready';
+}
+
+function drawMap() {
   const b = $('#board');
+  b.style.setProperty('--cols', MAP[0].length);
   b.innerHTML = '';
-  TILES.forEach((t, i) => {
-    const el = document.createElement('button');
-    const next = i === state.pos + 1 && !f;
-    el.className = 'tile' + (i === state.pos ? ' here' : '') + (next ? ' next' : '');
-    const foeHere = t.kind === 'fight' && !state.cleared.has(i);
-    el.innerHTML = `<span class="tname">${t.name}</span>` +
-      (i === state.pos ? '<span class="token">🛡️</span>' : '') +
-      (foeHere ? `<span class="token">${ENEMIES[t.enemy].icon}</span>` : '');
-    el.setAttribute('aria-label', t.name + (i === state.pos ? ', you are here' : '') + (foeHere ? ', enemy' : ''));
-    el.onclick = () => { if (next) step(); };
-    b.append(el);
-  });
+  const choiceAt = {};
+  for (const d of state.choosing || []) choiceAt[key(state.cell.r + DIRS[d][0], state.cell.c + DIRS[d][1])] = d;
+  MAP.forEach((row, r) => [...row].forEach((ch, c) => {
+    const k = key(r, c), cell = document.createElement(choiceAt[k] ? 'button' : 'div');
+    cell.className = 'cell' + (ch === '.' ? ' rock' : '') + (!state.visited.has(k) && ch !== '.' ? ' fog' : '') + (choiceAt[k] ? ' pick' : '');
+    if (ch !== '.') cell.innerHTML = TILE_ART[ch];
+    if (state.foes[k]) cell.insertAdjacentHTML('beforeend', `<div class="mini foe-mini">${ART[state.foes[k].art]}</div>`);
+    if (state.cell.r === r && state.cell.c === c) cell.insertAdjacentHTML('beforeend', `<div class="mini hero-mini">${ART.hero}</div>`);
+    if (choiceAt[k]) {
+      const d = choiceAt[k];
+      cell.insertAdjacentHTML('beforeend', `<span class="arrow">${{ up: '▲', down: '▼', left: '◀', right: '▶' }[d]}</span>`);
+      cell.setAttribute('aria-label', 'Go ' + d);
+      cell.onclick = () => choose(d);
+    }
+    b.append(cell);
+  }));
 }
 
 // ---- Input ----
 $('#start').onclick = newRun;
 $('#again').onclick = newRun;
+$('#roll-move').onclick = rollMove;
 document.querySelectorAll('#actions button').forEach(btn => btn.onclick = () => act(btn.dataset.act));
 addEventListener('keydown', e => {
   if (!$('#title').hidden && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); return newRun(); }
   if ($('#play').hidden) return;
-  if (e.key === 'ArrowRight') step();
+  const arrow = { ArrowUp: 'up', ArrowDown: 'down', ArrowLeft: 'left', ArrowRight: 'right' }[e.key];
+  if (arrow && state.choosing) { e.preventDefault(); return choose(arrow); }
+  if ((e.key === ' ' || e.key === 'Enter') && !state.foe && !$('#move').hidden && document.activeElement?.tagName !== 'BUTTON') { e.preventDefault(); return rollMove(); }
   const btn = document.querySelector(`#actions button[data-key="${e.key}"]`);
   if (btn && !btn.disabled && state.foe) act(btn.dataset.act);
 });
