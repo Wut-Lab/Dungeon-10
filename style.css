@@ -151,3 +151,7 @@ h1{font-size:clamp(2.2rem,9vw,3.4rem);color:var(--accent);margin:24px 0 0;letter
 .gear-box svg{width:34px;height:34px}.gear-box small{font-size:.58rem;line-height:1.1}
 .gear-box.leftHand{align-self:end;margin-bottom:22px}.gear-box.rightHand{margin-bottom:24px}
 .armor-stack{display:grid;gap:6px}
+
+/* Basic click animation for every button */
+button{transition:transform .08s ease-out,filter .08s}
+button:not(:disabled):active{transform:scale(.94);filter:brightness(.92)}

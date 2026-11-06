@@ -360,6 +360,9 @@ const SLOT_NAMES = { rightHand: 'Right hand', leftHand: 'Left hand', helmet: 'He
 // The hero's damage comes from the best equipped weapon, or bare fists.
 function applyGear() {
   const weapons = ['rightHand', 'leftHand'].map(s => EQUIPMENT[state.inv.equipped[s]]).filter(w => w?.damage);
+  const h = state.hero;
+  h.armor = PLAYER.armor + Object.values(state.inv.equipped).reduce((n, id) => n + (EQUIPMENT[id]?.armor || 0), 0);
+  h.broken = Math.min(h.broken, h.armor);   // taking off gear removes its slots, broken ones first
   state.hero.damage = weapons.length ? weapons.reduce((a, b) => (b.damage[1] > a.damage[1] ? b : a)).damage : PLAYER.damage;
 }
 function useItem(id) {
@@ -394,7 +397,7 @@ function inventoryMenu() {
       <div class="portrait">${equipBox('leftHand')}<div class="portrait-art">${ART.hero}</div>${equipBox('rightHand')}</div>
       <div class="armor-stack">${equipBox('helmet')}${equipBox('breastplate')}${equipBox('greaves')}</div>
     </div>
-    <p class="sub">Damage ${state.hero.damage[0]}–${state.hero.damage[1]} ${wpn.length ? '' : '(bare fists)'} · Tap a filled box to unequip.</p>
+    <p class="sub">Damage ${state.hero.damage[0]}–${state.hero.damage[1]} ${wpn.length ? '' : '(bare fists)'} · Armor ${state.hero.armor} · Tap a filled box to unequip.</p>
     <p class="sub">Pack</p>${pack || '<p class="none">Nothing unequipped.</p>'}`;
 }
 

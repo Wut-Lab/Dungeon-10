@@ -7,7 +7,7 @@ const PLAYER = {
   attack: 1,         // added to the d10 in opposed rolls
   damage: [1, 2],    // unarmed damage range; an equipped weapon replaces it
   armorBreak: 1,     // armor slots this attack breaks after a hit
-  armor: 3,          // max armor slots (each negates 1 damage, min 1 damage)
+  armor: 2,          // base armor slots (each negates 1 damage, min 1 damage); gear can add more
   repairRate: 0.33,  // Repair restores this share of BROKEN slots, rounded up, min 1
 };
 
@@ -38,10 +38,11 @@ const CONSUMABLES = {
 // Equipment slots: hand (either hand), helmet, breastplate, greaves.
 const EQUIPMENT = {
   shortSword: { name: 'Short Sword', slot: 'hand', damage: [2, 4], desc: 'Damage 2–4.' },
+  simpleShield: { name: 'Simple Shield', slot: 'hand', armor: 1, desc: '+1 armor slot.' },
 };
 // What the hero starts each run with.
 const START_KIT = {
   items: { healingPotion: 2 },
-  equipped: { rightHand: 'shortSword', leftHand: null, helmet: null, breastplate: null, greaves: null },
+  equipped: { rightHand: 'shortSword', leftHand: 'simpleShield', helmet: null, breastplate: null, greaves: null },
   pack: [],          // unequipped equipment
 };
