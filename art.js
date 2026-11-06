@@ -78,6 +78,36 @@ const ART = {
   <path class="d" d="M52 67 Q62 76 72 67 Q62 71 52 67 Z" fill="#2b1d0e"/>
   <path class="d" d="M56 68.2 l2 4 l2 -3.4 Z M64 68.8 l2 3.4 l2 -4 Z" fill="#f3e9d2"/>
   </svg>`,
+  goblinArcher: `<svg viewBox="0 0 120 160" class="paper" role="img" aria-label="Goblin Archer">
+  <rect x="49" y="118" width="9" height="32" fill="#4f6b2a"/>
+  <rect x="66" y="118" width="9" height="32" fill="#4f6b2a"/>
+  <path d="M42 148 h16 v8 h-19 Z M66 148 h14 l3 8 h-17 Z" fill="#3a2a18"/>
+  <path d="M76 74 L92 103 L86 107 L70 82 Z" fill="#6f8f3a"/>
+  <path d="M50 74 L26 94 L31 103 L54 84 Z" fill="#6f8f3a"/>
+  <path d="M47 74 Q62 67 77 74 L80 124 L44 124 Z" fill="#3f5a2a"/>
+  <path d="M62 72 L58 124 H66 Z" fill="#33491f" class="d"/><path d="M48 76 L78 112 L75 116 L45 80 Z" fill="#6b4a2a"/>
+  <rect x="45" y="115" width="35" height="7" fill="#3a2a18"/>
+  <circle cx="89" cy="106" r="5" fill="#7fa043"/>
+  <g class="wpn bow">
+  <path d="M28 52 Q8 92 28 132" fill="none" stroke="#6b4a2a" stroke-width="5" stroke-linecap="round"/>
+  <path d="M28 52 L30 92 L28 132" fill="none" stroke="#e8dcc0" stroke-width="1.2" class="string"/>
+  <g class="shaft"><path d="M8 92 H34" stroke="#8a6a3a" stroke-width="2.4"/><path d="M4 92 L11 88 L11 96 Z" fill="#9aa5a8"/><path d="M31 92 l5 -4 M31 92 l5 4" stroke="#c0392b" stroke-width="2"/></g>
+  <circle cx="31" cy="99" r="6" fill="#7fa043"/>
+  </g>
+  <path d="M44 51 L12 40 L44 63 Z" fill="#6f8f3a"/>
+  <path d="M80 51 L112 40 L80 63 Z" fill="#6f8f3a"/>
+  <ellipse cx="62" cy="57" rx="20" ry="17" fill="#7fa043"/>
+  <path class="m" d="M41 54 Q40 30 62 30 Q84 30 83 54 Q62 42 41 54 Z" fill="#33491f"/>
+  <ellipse class="d" cx="54" cy="56" rx="5" ry="3.5" fill="#f2d14a"/>
+  <ellipse class="d" cx="70" cy="56" rx="5" ry="3.5" fill="#f2d14a"/>
+  <circle class="d" cx="53" cy="56" r="2" fill="#8b1a10"/>
+  <circle class="d" cx="69" cy="56" r="2" fill="#8b1a10"/>
+  <path class="d" d="M48 49 L59 52 L59 54.5 L48 51.5 Z" fill="#4f6b2a"/>
+  <path class="d" d="M76 49 L65 52 L65 54.5 L76 51.5 Z" fill="#4f6b2a"/>
+  <path class="d" d="M62 57 L58 64 L65 64 Z" fill="#5f7f2f"/>
+  <path class="d" d="M52 67 Q62 76 72 67 Q62 71 52 67 Z" fill="#2b1d0e"/>
+  <path class="d" d="M56 68.2 l2 4 l2 -3.4 Z M64 68.8 l2 3.4 l2 -4 Z" fill="#f3e9d2"/>
+  </svg>`,
 };
 
 // Map tiles, drawn in the same paper style. viewBox 0 0 100 100.

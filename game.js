@@ -265,6 +265,12 @@ const ATTACK = {
   foe:  { body: [{ transform: 'none' }, { transform: 'translateX(4px)', offset: .3 }, { transform: 'translateX(-26px)', offset: .6 }, { transform: 'none' }],
           wpn: [{ transform: 'none' }, { transform: 'rotate(30deg)', offset: .3 }, { transform: 'rotate(-80deg)', offset: .6 }, { transform: 'none' }] },
 };
+// Per-enemy attack overrides, keyed by art. The archer draws and looses an arrow instead of stepping in.
+const FOE_ATTACK = {
+  goblinArcher: { body: [{ transform: 'none' }, { transform: 'translateX(6px)', offset: .35 }, { transform: 'translateX(-4px)', offset: .55 }, { transform: 'none' }],
+                  wpn: [{ transform: 'none' }, { transform: 'translateX(5px)', offset: .4 }, { transform: 'none', offset: .5 }, { transform: 'none' }],
+                  shaft: [{ transform: 'none', opacity: 1 }, { transform: 'translateX(5px)', opacity: 1, offset: .4 }, { transform: 'translateX(-190px)', opacity: 1, offset: .6 }, { transform: 'translateX(-190px)', opacity: 0, offset: .61 }, { transform: 'none', opacity: 0, offset: .9 }, { transform: 'none', opacity: 1 }] },
+};
 const HURT = [{ transform: 'none' }, { transform: 'translateX(-6px)', filter: 'sepia(1) saturate(4) hue-rotate(-30deg)', offset: .2 },
   { transform: 'translateX(6px)', offset: .4 }, { transform: 'translateX(-4px)', offset: .6 }, { transform: 'none', filter: 'none' }];
 const BREAK = [{ transform: 'none', background: 'var(--accent2)', opacity: 1 },
@@ -283,7 +289,8 @@ function playFx() {
   // Attacks play one after another (a tie shows both); each defender flinches as the blow lands.
   let t = 0;
   for (const fx of (state.fx || []).filter(x => !x.repair)) {
-    const fig = figs[fx.att], a = ATTACK[fx.att];
+    const fig = figs[fx.att], a = (fx.att === 'foe' && FOE_ATTACK[state.foe?.art]) || ATTACK[fx.att];
+    if (a.shaft) fig.querySelector('.shaft')?.animate(a.shaft, { duration: SPEED, delay: t, easing: 'ease-in' });
     fig.animate(a.body, { duration: SPEED, delay: t, easing: 'ease-in-out' });
     fig.querySelector('.wpn')?.animate(a.wpn, { duration: SPEED, delay: t, easing: 'ease-in-out' });
     figs[fx.def].animate(HURT, { duration: 400, delay: t + SPEED * .55 });

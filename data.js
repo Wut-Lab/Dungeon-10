@@ -13,6 +13,10 @@ const PLAYER = {
 
 // Enemies. abilities: 'hasty' = Hasty Attack (wins a tie where both drop to 0).
 const ENEMIES = {
+  // Weaker cousin of the Goblin Warrior: less HP, no armor, light damage, but quick (+1 Attack, Hasty Attack).
+  goblinArcher: { name: 'Goblin Archer', icon: '🏹', art: 'goblinArcher', hp: 4, attack: 2, damage: [1, 3], armorBreak: 0, armor: 0, abilities: ['hasty'],
+    gold: 5,
+    drops: [{ id: 'dirtyShoes', chance: 0.10 }] },
   goblinWarrior: { name: 'Goblin Warrior', icon: '👺', art: 'goblinWarrior', hp: 7, attack: 1, damage: [1, 5], armorBreak: 1, armor: 1, abilities: [],
     gold: 10,                                        // gold for defeating it
     drops: [{ id: 'dirtyShoes', chance: 0.10 }] },   // possible loot, each rolled separately
@@ -30,7 +34,7 @@ const MAP_SETTINGS = {
 };
 
 const ROOM_ENEMY_CHANCE = 0.25;           // chance a room (R, V or H) holds an enemy, rolled when you first enter it
-const ROOM_ENEMIES = ['goblinWarrior'];   // which enemies can appear in rooms
+const ROOM_ENEMIES = ['goblinWarrior', 'goblinArcher'];   // which enemies can appear in rooms
 
 // ---- Items and equipment ----
 // Consumables are used from Inventory > Items, or with "Use item" in a fight (that is your action for the round).
