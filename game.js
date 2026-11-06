@@ -60,6 +60,18 @@ function show(id) { for (const s of document.querySelectorAll('.screen')) s.hidd
 // Roll 1 + d10 steps. Hallways carry you straight on; in a room with more than one way on, you choose.
 const wait = ms => new Promise(res => setTimeout(res, calm.matches ? 0 : ms));
 
+// A real-looking d10 (pentagonal trapezohedron, seen face-on). Colour comes from CSS vars on .die.
+const D10_SVG = `<svg class="d10" viewBox="0 0 100 100" aria-hidden="true">
+  <polygon class="f-side" points="50,4 4,46 6,64 50,96 94,64 96,46"/>
+  <polygon class="f-low" points="14,52 6,64 50,96 50,78"/><polygon class="f-low" points="86,52 94,64 50,96 50,78"/>
+  <polygon class="f-top" points="50,4 14,52 50,78 86,52"/>
+  <polyline class="edge" points="50,4 4,46 6,64 50,96 94,64 96,46 50,4"/>
+  <path class="edge" d="M50,4 L14,52 L50,78 L86,52 Z M4,46 L14,52 L6,64 M96,46 L86,52 L94,64 M50,78 L50,96"/></svg>`;
+document.querySelectorAll('.die').forEach(d => d.prepend(document.createRange().createContextualFragment(D10_SVG)));
+const DIE_SPIN = [{ transform: 'rotate(0) scale(1)' }, { transform: 'rotate(-260deg) scale(.7) translateY(-6px)', offset: .5 },
+  { transform: 'rotate(-340deg) scale(1.08)', offset: .85 }, { transform: 'rotate(-360deg) scale(1)' }];
+function spinDie(el) { if (!calm.matches) el.querySelector('.d10')?.animate(DIE_SPIN, { duration: 550, easing: 'cubic-bezier(.2,.7,.3,1)' }); }
+
 async function rollMove() {
   if (state.foe || state.over || state.moving || state.steps) return;
   const die = d10();
@@ -67,6 +79,7 @@ async function rollMove() {
   state.steps = 1 + die;
   state.log = [`You roll ${die} + 1: move ${state.steps} spaces.`];
   render();
+  spinDie($('#move-die').parentElement);
   await keepMoving();
 }
 
@@ -251,7 +264,7 @@ const SPEED = 650; // ms for one attack
 
 function playFx() {
   const figs = { hero: $('#fig-hero'), foe: $('#fig-foe') };
-  for (const d of ['#hd', '#fd']) { const el = $(d).parentElement; el.classList.remove('roll'); void el.offsetWidth; el.classList.add('roll'); }
+  for (const d of ['#hd', '#fd']) spinDie($(d).parentElement);
   if (calm.matches) return;
   // Attacks play one after another (a tie shows both); each defender flinches as the blow lands.
   let t = 0;
@@ -337,25 +350,30 @@ const MENUS = {
   log: () => {
     const ids = Object.keys(ENEMIES).filter(id => bestiary[id]);
     if (!ids.length) return `<h3>Log</h3><p class="none">No enemies encountered yet. Creatures you meet are recorded here.</p>`;
-    return `<h3>Log</h3><p class="sub">Enemies encountered · ${ids.length} of ${Object.keys(ENEMIES).length}</p>` + ids.map(id => {
-      const e = ENEMIES[id], b = bestiary[id];
-      return `<article class="entry"><div class="entry-art">${ART[e.art] || ''}</div><div>
+    const open = $('#menu').dataset.foe;
+    if (open && ENEMIES[open]) {
+      const id = open, e = ENEMIES[id], b = bestiary[id];
+      return `<article class="entry card"><button class="card-close" aria-label="Close card">✕</button><div class="entry-art">${ART[e.art] || ''}</div><div>
         <h4>${e.name}</h4>
         <dl><dt>HP</dt><dd>${e.hp}</dd><dt>Attack</dt><dd>+${e.attack}</dd><dt>Damage</dt><dd>${e.damage[0]}–${e.damage[1]}</dd>
         <dt>Armor</dt><dd>${e.armor}</dd><dt>Break</dt><dd>${e.armorBreak}</dd></dl>
         ${e.abilities.length ? `<p class="abil">${e.abilities.map(a => a === 'hasty' ? 'Hasty Attack: wins a double knockout' : a).join(' · ')}</p>` : ''}
         <p class="tally">Met ${b.met} · Defeated ${b.defeated}${b.felledYou ? ` · Felled you ${b.felledYou}` : ''}</p>
       </div></article>`;
-    }).join('');
+    }
+    return `<h3>Log</h3><p class="sub">Enemies encountered · ${ids.length} of ${Object.keys(ENEMIES).length}</p>` +
+      ids.map(id => `<button class="foe-row" data-foe="${id}"><span class="row-art">${ART[ENEMIES[id].art] || ''}</span>${ENEMIES[id].name}</button>`).join('');
   },
   options: () => `<h3>Options</h3><div class="opt-list">
     <button data-opt="restart">Restart run</button>
     <button data-opt="title">Return to title</button>
-    <button data-opt="clear-log">Clear enemy log</button></div>`,
+    <button data-opt="settings">Settings</button></div>`,
+  settings: () => `<h3>Settings</h3><p class="none">Nothing here yet. Settings are coming soon.</p>`,
 };
 function openMenu(name) {
   if ($('#menu').dataset.open === name) return closeMenu();
   $('#menu').dataset.open = name;
+  delete $('#menu').dataset.foe;
   $('#menu-body').innerHTML = MENUS[name]();
   $('#menu').hidden = false;
   document.querySelectorAll('#nav button').forEach(b => b.setAttribute('aria-pressed', b.dataset.menu === name));
@@ -370,7 +388,10 @@ $('#menu-body').onclick = e => {
   const opt = e.target.closest('[data-opt]')?.dataset.opt;
   if (opt === 'restart') newRun();
   if (opt === 'title') { closeMenu(); show('title'); }
-  if (opt === 'clear-log') { bestiary = {}; try { localStorage.removeItem('d10-bestiary'); } catch {} openMenu('log'); }
+  if (opt === 'settings') openMenu('settings');
+  const foeId = e.target.closest('[data-foe]')?.dataset.foe;
+  if (foeId) { $('#menu').dataset.foe = foeId; $('#menu-body').innerHTML = MENUS.log(); }
+  if (e.target.closest('.card-close')) { delete $('#menu').dataset.foe; $('#menu-body').innerHTML = MENUS.log(); }
 };
 
 // ---- Input ----

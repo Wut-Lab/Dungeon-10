@@ -17,7 +17,7 @@ The title screen has the same download link.
 - The map reveals as you explore: you see every room and hallway you have visited, plus one space ahead through each opening. The exit is always visible so you know where to head.
 - Reach the **exit stairs** to win.
 - In a fight, tap an action or press **1** Attack, **2** Defend, **3** Repair, **4** Use item (coming soon), **5** Flee.
-- **Inventory**, **Log** and **Options** sit at the top of the play screen. The Log records every enemy you have met (stats, times met and defeated), kept between runs in your browser. Esc closes a menu.
+- **Inventory**, **Log** and **Options** sit at the top of the play screen. The Log records every enemy you have met as a list; tap one to open its full card (stats, times met and defeated). It is kept between runs in your browser. Esc closes a menu.
 
 ## Files
 | File | What's in it |

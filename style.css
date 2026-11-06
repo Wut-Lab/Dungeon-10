@@ -110,3 +110,27 @@ h1{font-size:clamp(2.2rem,9vw,3.4rem);color:var(--accent);margin:24px 0 0;letter
 .thin .slots{grid-area:slots;min-height:14px}.thin .slot{width:13px;height:15px}
 .thin .stats{grid-area:stats;font-size:.75rem;text-align:right}
 .plates{grid-template-columns:1fr}
+
+/* ---- d10 dice: every die uses the same SVG, coloured per die with CSS vars ---- */
+.die,.foe-die,.move-die{width:auto;height:auto;border:0;border-radius:0;background:none;box-shadow:none;transform:none;
+  display:grid;grid-template-areas:"d" "s";place-items:center;gap:2px;
+  --face:#4a8c78;--low:#2f5d50;--side:#24493f;--edge:#173029;--num:#fff}
+.foe-die{--face:#c0563a;--low:#8b2e16;--side:#6d2411;--edge:#3f1307}
+.die .d10{grid-area:d;width:64px;height:64px;filter:drop-shadow(2px 3px 0 rgba(43,29,14,.35))}
+.die b{grid-area:d;align-self:start;margin-top:17px;color:var(--num);font-size:1.45rem;text-shadow:0 1px 2px #0008;z-index:1}
+.die small{grid-area:s;font-size:.7rem;color:var(--mute)}
+.d10 .f-top{fill:var(--face)}.d10 .f-low{fill:var(--low)}.d10 .f-side{fill:var(--side)}
+.d10 .edge{fill:none;stroke:var(--edge);stroke-width:2;stroke-linejoin:round}
+.die.roll{animation:none}
+#move{flex-direction:column;width:100%;gap:8px}
+#roll-move{width:100%}
+.move-die .d10{width:72px;height:72px}.move-die b{margin-top:19px;font-size:1.6rem}
+
+/* ---- Log rows and full card ---- */
+.foe-row{display:flex;align-items:center;gap:12px;width:100%;padding:6px 8px;margin-top:6px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--fg);font:700 1rem Georgia,serif;text-align:left;cursor:pointer}
+.foe-row:hover{border-color:var(--accent2)}
+.row-art{width:40px;height:44px;display:flex;justify-content:center}.row-art svg{height:100%;width:auto}
+.entry.card{position:relative;border:0;padding:4px 0 0}
+.card-close{position:absolute;top:0;right:0;border:0;background:none;color:var(--mute);font-size:1.1rem;cursor:pointer;min-width:32px;min-height:32px}
+#menu[data-foe] #menu-close{display:none}
+.stage .die small{color:#2b1d0e;font-weight:700}
